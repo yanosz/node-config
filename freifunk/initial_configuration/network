@@ -1,0 +1,90 @@
+package network
+
+# bat0 Interface - wird fuer batman-adv Bridgin benoetigt
+config interface 'bat0'
+	option proto 'none'
+	option ifname 'bat0'
+
+# Freifunk-Interface - das Haupt-Interface des Nodes.
+# Dieser Bridge sind alle konfigurierten Netze zugewiesen
+# Sie verwendet per default eine eigene routing-Tabelle
+# und ist IPv4 / IPv6 Dual stacked konfiguriert
+
+# via ip6assign und ip6class wird erreicht, dass der konfigurierte
+# ULA range fuer router advertisments zur Verfuegung steht
+config interface 'freifunk'
+	option ifname 'bat0'
+	option type 'bridge'
+	option auto '1'
+	option proto 'static'
+	option ipaddr '10.159.64.1'
+	option netmask '255.255.255.0'
+	option ip6prefix 'fdd3:5d16:b5dd:f064::/64'
+	option ip6addr 'fdd3:5d16:b5dd:f064::1/64'
+	option ip6assign '64'
+	list ip6class 'vpn6'
+	list ip6class 'freifunk'
+	option ip4table '66'
+	option ip6table '66'
+
+# Fastd wird hier als interface konfiguriert, damit es in der Firewall
+# referenziert werden kann.
+# Auf dem Interface ist die IPv4 Adresse des Nodes konfiguriert - 
+# jedoch ohne entspr. Fuer IPv6 wird einfach die Link Local Adresse verwendet
+config interface 'fastd' 
+	option ifname 'tap-fastd'
+	option proto 'static'
+	option ipaddr '10.159.64.1'
+	option netmask '255.255.255.255'
+	option ip6table '66'
+	option ip4table '66'
+
+# Aehnlich zu fastd wird das Interface fuer das Exit-VPN definiert
+# Es kann somit in der Firewall referenziert werden.
+# Die IP-Adresse wird jedoch durch den VPN-Provider gesetzt
+config interface 'vpn'
+	option proto 'none'
+	option ifname 'tun0'
+	option ip4table '66'
+	option ip6table '66'
+
+# Route in der Freifunk-Tabelle: Konfigurierten Range auf Interface routen
+config route 'route4_node_subnet'
+	option interface 'freifunk'
+	option target '10.159.64.0'
+	option netmask '255.255.255.0'
+	option gateway '0.0.0.0'
+	option table '66'
+
+# Route in der Freifunk-Tabelle: Konfiguriertes ULA-Netz auf Interface routen
+config route6 'route_6_node_subnet'
+	option interface 'freifunk'
+	option target 'fdd3:5d16:b5dd:f064::/64'
+	option table '66'
+
+# Falls der VPN-Provider IPv6 Prefix-Delegation unterstuetzt
+# Wird ein entspr. Prefix abgerufen. Gleichzeit wird Policy-Routing
+# Fuer die entspr. Adressen definiert
+config interface 'vpn6'
+	option proto 'dhcpv6'
+	option ifname 'tun0'
+	option ip6table '66'
+
+# Batman-adv Interface. Definiert, dass batman-adv fuer das mesh
+# Verwendet wird
+config interface 'mesh'
+	option proto 'batadv'
+	option mtu '1532'
+	option mesh 'bat0'
+
+# Routing-Policy: Nutze die Freifunk-Tabelle (66) fuer das Interface
+config rule 'rule_freifunk_iif'
+	option in 'freifunk'
+	option lookup '66'
+
+# Routing-Policy: Nutze die Freifunk-Regel fuer das Interface
+config rule 'rule_freifunk_oif'
+	option out 'freifunk'
+	option lookup '66'
+
+

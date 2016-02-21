@@ -1,0 +1,27 @@
+package fastd
+
+# Fastd (layer-2) hier beispielhaft fuer einen WAN-Uplink
+# zum Zugriff auf das ICVPN konfiguriert
+
+# Im fastd wird babel als Routing-Protokoll verwendet
+# Fuege eigene Peers hinzu, wenn Daten mit anderen Freifunk-Nodes austauschen moechtest,
+# Die nicht in Funkreichweite sind
+config peer 'icvpn_test'
+	option remote 'ipv4 "5.9.31.99" port 10003'
+	option enabled '1'
+	option net 'backbone'
+	option key 'fa824f8d39adcb3ad6232660bda439020d3c2e61dd56466439fc66c0ee159b41'
+
+# Das Backbone-Netz (hier fuer das ICVPN) ist per default verschluesselt
+config fastd 'backbone'
+	option enabled '1'
+	option syslog_level 'warn'
+	option mode 'tap'
+	option interface 'tap-fastd'
+	option mtu '1280'
+	option forward '0'
+	option secure_handshakes '0'
+	list method 'salsa2012+umac'
+	list bind 'any:10000'
+	option secret 'generate'
+

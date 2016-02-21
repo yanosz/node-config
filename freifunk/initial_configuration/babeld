@@ -1,0 +1,40 @@
+package babeld
+
+
+# Babel nutzt die Routing-Tabelle 66 (freifunk) zum Import und Export
+# Die Routes werden mit niedrigerer Prioritaet (1002) installiert, 
+# damit eine lokale Default-Route (z.B. durch ein Exit-VPN) bevorzugt wird
+
+config general
+	option ipv6_subtrees 'true'
+	option export_table '66'
+	option import_table '66'
+	option kernel_priority '1002' 
+
+
+# Static Routes in der Freifunk-Tabelle werden grundsaetzlich exportiert,
+# damit die konfigurierten Subnets (und ggf. die Exit-VPN-Default-Route)
+# Im Mesh erreichbar sind
+config filter 'redistribute_static'
+	option type 'redistribute'
+	option proto '4'
+
+# Lokale Routes werden nicht exportiert
+# Hierzu zaehlen Routes fuer IP-Adressen, die lokal auf den Interfaces
+# des Nodes konfiguriert sind. Diese Routes werden im mesh nicht benoetigt
+# und erhoehren nur den Traffic
+config filter
+	option type 'redistribute'
+	option local 'true'
+	option action 'deny'
+
+# babeld lauscht per Default auf 2 Interfaces
+# Ad-Hoc interface
+config interface
+	option ifname 'wlan0'
+	option wired 'false'
+
+# fastd - Roaming (Peering) ueber WAN oder andere Netze
+config interface
+	option ifname 'tap-fastd'
+	option wired 'true'

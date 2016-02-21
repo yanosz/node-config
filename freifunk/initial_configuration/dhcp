@@ -1,0 +1,21 @@
+package dhcp
+
+# Der DHCP-config wird ein Server (IPv6 und IPv4) fuer das Freifunk-Netz hinzugefuegt
+# Er liefert beinahe den kompletten Class-C Range aus.
+# IPv6 ist so konfiguriert, dass der Node als Default-Router auch fuer den ULA-Range arbeitet
+# Damit ist ein Zugriff auf den kompletten ULA range moeglich.
+
+# Subnet-Delegation ist deaktiviert. Sie findet nur auf dem ad-hoc Interface statt
+# Fuer das Freifunk-Netz sind IPv6-Adressbloecke /64 zugewiesen, so dass hier nichts
+# weiter verteilt werden kann.
+config dhcp 'freifunk'
+	option interface 'freifunk'
+	option start '2'
+	option limit '250'
+	option leasetime '10m'
+	option dhcpv6 'none'
+	option ra 'server'
+	option dhcp_option '6,213.202.215.23,87.98.175.85,193.183.98.154'
+	option ra_offlink '1'
+	option ra_default '1'
+

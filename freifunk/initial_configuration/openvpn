@@ -1,0 +1,7 @@
+package openvpn
+
+# OpenVPN-Konfiguration fuer Exit-VPN-Anbieter. 
+# Beispiel fuer mullvad - hier enabled
+config openvpn 'mullvad'
+	option enabled '1'
+	option config '/lib/freifunk/vpn/mullvad/mullvad.conf'

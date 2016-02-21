@@ -1,0 +1,107 @@
+package firewall
+
+# Die Firewall trennt das Freifunk-Netz von den anderen Netzen ab.
+# Hierbei ist das Freifunk-Netz von LAN und WAN getrennt, damit keine
+# Datenpakete ihren Weg in andere Netze finden.
+
+# ACHTUNG: Die Konfiguration ist NICHT SICHER
+# Bei einer Kompromittierung des Freifunk-Routes (bspw. durch einen Exploit in babeld)
+# ist ein ungefilterter Zugang auf die anderen Netze moeglich!
+
+# Diese Firewall verhindert daher nur das unbeabsichtigte Weiterleiten bestimmter Datenpakete --- 
+# insb. ueber das Deinen Internet-Anschluss
+# Zusaetzlich wird der Zugriff auf Dienste (wie z.B. telnet) aus dem Freifunk-Netz unterbunden
+# um den Schaden bei einer Fehlkonfiguration zu beschraeken.
+# Benoetigte Dienste wie bspw. babel werden explizit freigegeben.
+
+# Hinweis: Falls Du Erfahrung mit dem Abuse handling hast und Deinen Internet-Zugang ungeschuetzt freigeben moechtest
+# Musst Du ein passenden Forwarding zusaetzlich wie folgt definieren.
+
+#config forwarding
+#	option dest 'wan'
+#	option src 'freifunk'
+
+# ACHTUNG: Du solltest hier genau wissen, was Du tust.
+
+# Hier die normalen Regeln
+# fastd ist auf dem WAN-Interface erreichbar, um andere Nodes anbinden zu koennen
+config rule
+	option name 'fastd'
+	option src 'wan'
+	option dest_port '10000'
+	option proto 'udp'
+	option target 'ACCEPT'
+	option family 'ipv4'
+
+# Defintion der Freifunk-Zone. Sie besteht aus dem
+# Freifunk-Interface: Bridge ueber bat0, Accesspoint
+# Dem Mesh (Ad-Hoc-Wifi, ohne batman-adv; fuer babel)
+# fastd - dem Interface fuer routed VPN-Uplinks
+config zone
+	option forward 'ACCEPT'
+	option output 'ACCEPT'
+	option input 'REJECT'
+	option name 'freifunk'
+	option network 'bat0 fastd freifunk mesh'
+	option mtu_fix '1'
+
+# In der Zone Freifunk, sind die folgenden Dienste / eingehenden Pakete erlaubt:
+# 1. Babel
+config rule
+	option name 'Babel'
+	option src 'freifunk'
+	option proto 'udp'
+	option dest_port '6696'
+	option limit '1000/sec'
+	option target 'ACCEPT'
+
+# 2. IGMP
+config rule
+	option name 'Allow IGMP (Freifunk)'
+	option src 'freifunk'
+	option proto 'igmp'
+	option family 'ipv4'
+	option target 'ACCEPT'
+
+# 3. ICMP
+config rule
+	option name 'Allow ICMP (Freifunk)'
+	option src 'freifunk'
+	option proto 'icmp'
+	option family 'ipv4'
+	option target 'ACCEPT'
+
+# 4. DHCP (requests an den Server)
+config rule
+	option name 'Allow DHCP request (Freifunk)'
+	option src 'freifunk'
+	option dest_port '67-68'
+	option proto 'udp'
+	option target 'ACCEPT'
+	option family 'ipv4'
+
+# 5. ICMP v6
+config rule
+	option name 'Allow-ICMPv6-Input (Freifunk)'
+	option src 'freifunk'
+	option proto 'icmp'
+	option limit '1000/sec'
+	option family 'ipv6'
+	option target 'ACCEPT'
+
+# Der VPN-Uplink ist in einer eigenen Zone, da hier 
+# masquerading benoetigt wird
+config zone
+	option forward 'ACCEPT'
+	option output 'ACCEPT'
+	option input 'REJECT'
+	option network 'vpn'
+	option name 'vpn'
+	option masq '1'
+	option mtu_fix '1'
+
+# Ein Forwarding zwischen VPN und freifunk ist definiert.
+config forwarding
+	option dest 'vpn'
+	option src 'freifunk'
+
