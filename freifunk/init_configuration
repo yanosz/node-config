@@ -26,10 +26,12 @@ uci import firewall -m < /lib/freifunk/initial_configuration/firewall
 uci import network -m < /lib/freifunk/initial_configuration/network
 uci import dhcp -m < /lib/freifunk/initial_configuration/dhcp
 uci import wireless -m < /lib/freifunk/initial_configuration/wireless
+uci import openvpn -m < /lib/freifunk/initial_configuration/openvpn
 
 uci import babeld < /lib/freifunk/initial_configuration/babeld
 uci import batman-adv < /lib/freifunk/initial_configuration/batman-adv
 uci import fastd < /lib/freifunk/initial_configuration/fastd
+
 
 uci commit
 

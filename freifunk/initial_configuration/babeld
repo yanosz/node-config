@@ -9,7 +9,7 @@ config general
 	option ipv6_subtrees 'true'
 	option export_table '66'
 	option import_table '66'
-	option kernel_priority '1002' 
+	option kernel_priority '2048' 
 
 
 # Static Routes in der Freifunk-Tabelle werden grundsaetzlich exportiert,

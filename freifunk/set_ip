@@ -10,8 +10,6 @@ read ipv4_addr
 echo "IPv4 netmask des Nodes - z.B. 255.255.255.0"
 read ipv4_mask
 echo ""
-echo "IPv6-ULA-Adresse des Nodes (CIDR) - z.B. fdd3:5d16:b5dd:f040::1/64"
-read ipv6_address
 echo "IPv6-ULA-Netz des Nodes (CIDR) - z.B. fdd3:5d16:b5dd:f040::/64"
 read ipv6_network
 echo "IPv6 ULA-Range der Freifunk-Community - z.B. fdd3:5d16:b5dd::/48 (bei KBU)"
