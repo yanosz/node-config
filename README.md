@@ -32,7 +32,6 @@ cd OpenWrt-ImageBuilder-15.05-ar71xx-generic.Linux-x86_64
 make image PROFILE="TLWR841" PACKAGES="ip openvpn-polarssl babeld fastd ebtables kmod-ebtables-ipv4 owipcalc batctl haveged"
 ```
 
-
 Die Details
 -----------------------
 #### Shell-Scripts
@@ -48,29 +47,29 @@ Die Konfiguration sind .uci-Settings die importiert wird. Ausnahmen: ebtables un
 ##### Babeld - [freifunk/initial_configuration/babeld.uci](freifunk/initial_configuration/babeld.uci)
 babeld wird als Routing-Protokoll genutzt. Es nutzt sowohl das ad-hoc Interface zum meshing und ein fastd-Interface zur Anbindung an weitere Supernodes und das ICVPN.
 
-#### batman-adv - [freifunk/initial_configuration/batman-adv.uci](freifunk/initial_configuration/batman-adv.uci)
+##### batman-adv - [freifunk/initial_configuration/batman-adv.uci](freifunk/initial_configuration/batman-adv.uci)
 batman-adv wird zum Roaming innerhalb des Meshes verwendet. Jeder Node ist Gateway, d.h. betreibt einen dhcp-Server.
 
-#### dhcp / radvd - [freifunk/initial_configuration/dhcp.uci](freifunk/initial_configuration/dhcp.uci)
+##### dhcp / radvd - [freifunk/initial_configuration/dhcp.uci](freifunk/initial_configuration/dhcp.uci)
 Für Clients am Accesspoint wird ein IPv4-DHCP-Server und ein radvd definiert. Es werden private bzw. ULA-Adressen verwendet. Falls Public IPv6-Adressen zur Verfügung stehen werden sie auch verwendet. Die Konfiguration ist ein Shell-Script, da `/etc/firewall.user` nicht per UCI verwaltet wird.
 
-#### Multicast-Filter - [freifunk/initial_configuration/ebtables.sh](freifunk/initial_configuration/ebtables.sh)
+##### Multicast-Filter - [freifunk/initial_configuration/ebtables.sh](freifunk/initial_configuration/ebtables.sh)
 Multicast / Anycast im batman-adv Mesh wird stark eingeschränkt, da das mesh nur zum Roaming verwendet wird.
 
-#### fastd - [freifunk/initial_configuration/fastd.uci](freifunk/initial_configuration/fastd.uci)
+##### fastd - [freifunk/initial_configuration/fastd.uci](freifunk/initial_configuration/fastd.uci)
 Per fastd wird eine Verbindung zu anderen Nodes aufgebaut, zu denen kein Funkkontakt besteht. Testweise ist ein Node mit Zugang zum ICVPN hinterlegt. Zum Routing wird babeld verwendet.
 
-#### Firewall - [freifunk/initial_configuration/firewall.uci](freifunk/initial_configuration/firewall.uci)
+##### Firewall - [freifunk/initial_configuration/firewall.uci](freifunk/initial_configuration/firewall.uci)
 Die Firewall definiert Zonen für Freifunk und VPN-Tunnel zum Internet. Verkehr zwischen Freifunk und WAN / LAN wird per default unterbunden.
 
-#### Netzwerk - [freifunk/initial_configuration/network.uci](freifunk/initial_configuration/network.uci)
+##### Netzwerk - [freifunk/initial_configuration/network.uci](freifunk/initial_configuration/network.uci)
 In der Netzwerk konfiguration sind verschiedene Interfaces für Wifi, fastd, VPN definiert um sie in der Firewall zu registieren.
 Darüber hinaus weißt sie dem Node-Interface die konfigurierten IP-Adressen zu und definiert policy-Routing.
 
-#### OpenVPN - [freifunk/initial_configuration/openvpn.uci](freifunk/initial_configuration/openvpn.uci)
+##### OpenVPN - [freifunk/initial_configuration/openvpn.uci](freifunk/initial_configuration/openvpn.uci)
 In der UCI-Datei sind Beispiel-Konfigurationen verschieder VPN-Anbieter realisiert. Die Anbieter-Konfiguration selbst findet sich in [freifunk/vpn](freifunk/vpn).
 
-#### Wifi - [freifunk/initial_configuration/wireless.sh](freifunk/initial_configuration/wireless.sh)
+##### Wifi - [freifunk/initial_configuration/wireless.sh](freifunk/initial_configuration/wireless.sh)
 Definiert 2 Wifi-Netze (ad-hoc + AP).
 
 **Achtung:** Bei Anwendung wird ein vorhandenes OpenWRT Wifi gelöscht, da sonst ein unverschlüsselter Accesspoint für das LAN-Netz erstellt werden könnte.
