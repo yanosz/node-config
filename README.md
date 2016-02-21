@@ -20,7 +20,7 @@ Du kannst das Internet entweder über einen VPN-Tunnel oder direkt freigeben:
 Für einen VPN-Tunnel (z.B. via mullvad) musst Du die entsprechende Anbieter-Konfiguration in `/lib/freifunk/vpn` auf dem Node hinterlegen und in `/etc/config/openvpn` referenzieren.
 
 Wenn Du  Dein eigenes Internet ohne VPN freigeben willst, dann musst Du das entsprechende Forwarding in `/etc/config/firewall` aktivieren und in `/etc/config/network` IPv6-Range Zuweisungen aus `wan6` auf dem Freifunk-Interface erlauben. 
-*Hinweis: Du solltest Dein Internet nur dann freigeben, wenn Du Erfahrung im Abuse-Handling hast.*
+*Hinweis: Du solltest Dein Internet nur dann freigeben, wenn Du Erfahrung im Abuse-Handling hast.* ToDo: IPv4.
 
 Wenig Speicherplatz?
 ----------------------
