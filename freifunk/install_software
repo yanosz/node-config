@@ -1,8 +1,0 @@
-#!/bin/sh
-
-PKGS="ip openvpn-polarssl babeld batctl fastd kmod-ebtables ebtables kmod-ebtables-ipv4"
-
-echo "Installing: $PKGS"
-
-opkg update
-opkg install $PKGS
