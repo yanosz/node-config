@@ -1,6 +1,3 @@
-HowTo
-==========
-
 Worum geht's?
 --------------------
 Dieses Projekt enthält einige Konfigurationsdateien, die beispielhaft für einen Freifunk-Node verwendet werden können.
@@ -18,12 +15,45 @@ Hinweis: Die IP-Adressen müssen in die Wiki eintragen werden (vgl. :
 
 Die Details
 -----------------------
-Shell-Scripts installieren die Konfiguration auf dem Node. Es gibt
+### Shell-Scripts
+Shell-Scripts installieren die Konfiguration auf dem Node. Es gibt:
 * [freifunk/install_software.sh](freifunk/install_software.sh) - Installiert benötigte Pakete
 * [freifunk/import_configuration.sh](freifunk/import_configuration.sh) - Importiert die Konfiguration
 * [freifunk/set_ip.sh](freifunk/set_ip.sh) - Setzt IP-Adressen und Subnets des Nodes in der kompletten Konfiguration
 * [freifunk/install.sh](freifunk/install.sh) - Ruft die anderen Scripts in der richtigen Reihenfolge auf
 
+### Konfigurtion
+Die Konfiguration sind .uci-Settings die importiert wird. Ausnahmen: ebtables und wireless. Hier können keine .uci-Settings merged werden. Ich geb' hier nur eine grobe Übersicht über die enthaltene Konfiguration. **Alle Dateien sind ausführlich kommentiert. Details findest in den Files selbst**. 
+
+#### Babeld - [freifunk/initial_configuration/babeld.uci](freifunk/initial_configuration/babeld.uci)
+babeld wird als Routing-Protokoll genutzt. Es nutzt sowohl das ad-hoc Interface zum meshing und ein fastd-Interface zur Anbindung an weitere Supernodes und das ICVPN.
+
+#### batman-adv - [freifunk/initial_configuration/batman-adv.uci](freifunk/initial_configuration/batman-adv.uci)
+batman-adv wird zum Roaming innerhalb des Meshes verwendet. Jeder Node ist Gateway, d.h. betreibt einen dhcp-Server.
+
+#### dhcp / radvd - [freifunk/initial_configuration/dhcp.uci](freifunk/initial_configuration/dhcp.uci)
+Für Clients am Accesspoint wird ein IPv4-DHCP-Server und ein radvd definiert. Es werden private bzw. ULA-Adressen verwendet. Falls Public IPv6-Adressen zur Verfügung stehen werden sie auch verwendet. Die Konfiguration ist ein Shell-Script, da `/etc/firewall.user` nicht per UCI verwaltet wird.
+
+#### Multicast-Filter - [freifunk/initial_configuration/ebtables.sh](freifunk/initial_configuration/ebtables.sh)
+Multicast / Anycast im batman-adv Mesh wird stark eingeschränkt, da das mesh nur zum Roaming verwendet wird.
+
+#### fastd - [freifunk/initial_configuration/fastd.uci](freifunk/initial_configuration/fastd.uci)
+Per fastd wird eine Verbindung zu anderen Nodes aufgebaut, zu denen kein Funkkontakt besteht. Testweise ist ein Node mit Zugang zum ICVPN hinterlegt. Zum Routing wird babeld verwendet.
+
+#### Firewall - [freifunk/initial_configuration/firewall.uci](freifunk/initial_configuration/firewall.uci)
+Die Firewall definiert Zonen für Freifunk und VPN-Tunnel zum Internet. Verkehr zwischen Freifunk und WAN / LAN wird per default unterbunden.
+
+#### Netzwerk - [freifunk/initial_configuration/network.uci](freifunk/initial_configuration/network.uci)
+In der Netzwerk konfiguration sind verschiedene Interfaces für Wifi, fastd, VPN definiert um sie in der Firewall zu registieren.
+Darüber hinaus weißt sie dem Node-Interface die konfigurierten IP-Adressen zu und definiert policy-Routing.
+
+#### OpenVPN - [freifunk/initial_configuration/openvpn.uci](freifunk/initial_configuration/openvpn.uci)
+In der UCI-Datei sind Beispiel-Konfigurationen verschieder VPN-Anbieter realisiert. Die Anbieter-Konfiguration selbst findet sich in [freifunk/vpn](freifunk/vpn).
+
+#### Wifi - [freifunk/initial_configuration/wireless.sh](freifunk/initial_configuration/wireless.sh)
+Definiert 2 Wifi-Netze (ad-hoc + AP).
+
+**Achtung:** Bei Anwendung wird ein vorhandenes OpenWRT Wifi gelöscht, da sonst ein unverschlüsselter Accesspoint für das LAN-Netz erstellt werden könnte.
 
 Wenig Speicherplatz?
 ----------------------
