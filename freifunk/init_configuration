@@ -43,6 +43,3 @@ echo "ebtables -A FORWARD -p ARP -j ACCEPT" >> /etc/firewall.user
 echo "ebtables -A FORWARD -p IPv4 --ip-protocol udp --ip-destination-port 67:68 -j ACCEPT" >> /etc/firewall.user
 echo "ebtables -A FORWARD -d Multicast -j DROP" >> /etc/firewall.user
 
-set_ip
-
-echo "Konfiguration abgeschlossen --- Node sollte jetzt neu gestartet werden"
