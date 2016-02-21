@@ -4,7 +4,7 @@
 /lib/freifunk/install_software.sh
 
 # Konfiguration übernehmen
-/lib/freifunk/import_confiugration.sh
+/lib/freifunk/import_configuration.sh
 
 # IP-Adresse setzen
 /lib/freifunk/set_ip.sh

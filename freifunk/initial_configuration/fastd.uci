@@ -6,6 +6,9 @@ package fastd
 # Im fastd wird babel als Routing-Protokoll verwendet
 # Fuege eigene Peers hinzu, wenn Daten mit anderen Freifunk-Nodes austauschen moechtest,
 # Die nicht in Funkreichweite sind
+
+# Zum Test: Peer fuer das ICVPN.
+# Besser: Installiere Deinen eigenen ICVPN-Peer. z.B. auf einem Rasperry Pi
 config peer 'icvpn_test'
 	option remote 'ipv4 "5.9.31.99" port 10003'
 	option enabled '1'

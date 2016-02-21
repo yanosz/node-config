@@ -12,6 +12,7 @@ echo ""
 echo "IPv6-ULA-Netz des Nodes (CIDR) - z.B. fdd3:5d16:b5dd:f040::/64"
 read ipv6_network
 
+#Basis-Adressen fuer die entspr. Routes ausrechnen
 ipv4_network=$(owipcalc $ipv4_addr/$ipv4_mask network)
 ipv6_network_community=$(owipcalc $ipv6_network prev 48 network)
 
