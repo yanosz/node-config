@@ -13,19 +13,39 @@ Hinweis: Die IP-Adressen müssen in die Wiki eintragen werden (vgl. :
 2. Datei auf den Node kopieren: `cd node-config; scp -r freifunk root@<IP des Nodes>:/lib`
 3. Node installieren: `ssh root@<IP des Nodes> /lib/freifunk/install.sh`
 
+Internet freigeben?
+------------------------
+Du kannst das Internet entweder über einen VPN-Tunnel oder direkt freigeben:
+
+Für einen VPN-Tunnel (z.B. via mullvad) musst Du die entsprechende Anbieter-Konfiguration in `/lib/freifunk/vpn` auf dem Node hinterlegen und in `/etc/config/openvpn` referenzieren.
+
+Wenn Du  Dein eigenes Internet ohne VPN freigeben willst, dann musst Du das entsprechende Forwarding in `/etc/config/firewall` aktivieren und in `/etc/config/network` IPv6-Range Zuweisungen aus `wan6` auf dem Freifunk-Interface erlauben. 
+*Hinweis: Du solltest Dein Internet nur dann freigeben, wenn Du Erfahrung im Abuse-Handling hast.*
+
+Wenig Speicherplatz?
+----------------------
+Wenn Dein Node lediglich 4 MB Flash hat (z.B. TP-Link WR841n), dann musst Du ein OpenWRT-Image erstellen, in dem keine WebGUI enthalten ist - zum Beispiel:
+```bash
+wget http://openwrt.kbu.freifunk.net/chaos_calmer/15.05/ar71xx/generic/OpenWrt-ImageBuilder-15.05-ar71xx-generic.Linux-x86_64.tar.bz2
+tar xjf OpenWrt-ImageBuilder-15.05-ar71xx-generic.Linux-x86_64.tar.bz2
+cd OpenWrt-ImageBuilder-15.05-ar71xx-generic.Linux-x86_64
+make image PROFILE="TLWR841" PACKAGES="ip openvpn-polarssl babeld fastd ebtables kmod-ebtables-ipv4 owipcalc batctl haveged"
+```
+
+
 Die Details
 -----------------------
-### Shell-Scripts
+#### Shell-Scripts
 Shell-Scripts installieren die Konfiguration auf dem Node. Es gibt:
 * [freifunk/install_software.sh](freifunk/install_software.sh) - Installiert benötigte Pakete
 * [freifunk/import_configuration.sh](freifunk/import_configuration.sh) - Importiert die Konfiguration
 * [freifunk/set_ip.sh](freifunk/set_ip.sh) - Setzt IP-Adressen und Subnets des Nodes in der kompletten Konfiguration
 * [freifunk/install.sh](freifunk/install.sh) - Ruft die anderen Scripts in der richtigen Reihenfolge auf
 
-### Konfigurtion
+#### Konfiguration
 Die Konfiguration sind .uci-Settings die importiert wird. Ausnahmen: ebtables und wireless. Hier können keine .uci-Settings merged werden. Ich geb' hier nur eine grobe Übersicht über die enthaltene Konfiguration. **Alle Dateien sind ausführlich kommentiert. Details findest in den Files selbst**. 
 
-#### Babeld - [freifunk/initial_configuration/babeld.uci](freifunk/initial_configuration/babeld.uci)
+##### Babeld - [freifunk/initial_configuration/babeld.uci](freifunk/initial_configuration/babeld.uci)
 babeld wird als Routing-Protokoll genutzt. Es nutzt sowohl das ad-hoc Interface zum meshing und ein fastd-Interface zur Anbindung an weitere Supernodes und das ICVPN.
 
 #### batman-adv - [freifunk/initial_configuration/batman-adv.uci](freifunk/initial_configuration/batman-adv.uci)
@@ -55,12 +75,4 @@ Definiert 2 Wifi-Netze (ad-hoc + AP).
 
 **Achtung:** Bei Anwendung wird ein vorhandenes OpenWRT Wifi gelöscht, da sonst ein unverschlüsselter Accesspoint für das LAN-Netz erstellt werden könnte.
 
-Wenig Speicherplatz?
-----------------------
-Wenn Dein Node lediglich 4 MB Flash hat (z.B. TP-Link WR841n), dann musst Du ein OpenWRT-Image erstellen, in dem keine WebGUI enthalten ist - zum Beispiel:
-```bash
-wget http://openwrt.kbu.freifunk.net/chaos_calmer/15.05/ar71xx/generic/OpenWrt-ImageBuilder-15.05-ar71xx-generic.Linux-x86_64.tar.bz2
-tar xjf OpenWrt-ImageBuilder-15.05-ar71xx-generic.Linux-x86_64.tar.bz2
-cd OpenWrt-ImageBuilder-15.05-ar71xx-generic.Linux-x86_64
-make image PROFILE="TLWR841" PACKAGES="ip openvpn-polarssl babeld fastd ebtables kmod-ebtables-ipv4 owipcalc batctl haveged"
-```
+
