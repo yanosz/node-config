@@ -23,6 +23,7 @@ config interface 'freifunk'
 	option ip6assign '64'
 	list ip6class 'vpn6'
 	list ip6class 'freifunk'
+# 	list ip6class 'wan6' # ACHTUNG: Nur aktivieren, wenn Du Dein Internet ohne VPN freigeben willst.
 	option ip4table '66'
 	option ip6table '66'
 
