@@ -15,7 +15,6 @@ config dhcp 'freifunk'
 	option leasetime '10m'
 	option dhcpv6 'none'
 	option ra 'server'
-	option dhcp_option '6,213.202.215.23,87.98.175.85,193.183.98.154'
+	option dhcp_option '6,111.67.16.202,87.98.175.85,193.183.98.154'
 	option ra_offlink '1'
 	option ra_default '1'
-
