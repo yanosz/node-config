@@ -87,4 +87,9 @@ config rule 'rule_freifunk_oif'
 	option out 'freifunk'
 	option lookup '66'
 
+# Addresse: Routing über ipv4
+config interface 'babel_mesh'           
+        option proto 'static'           
+        option ipaddr '10.159.64.1'     
+        option netmask '255.255.255.255'
 

@@ -14,7 +14,7 @@ uci -q batch <<EOF
         
         set wireless.wifi_mesh='wifi-iface'             # 2. WLAN: Ad-Hoc Mesh
         set wireless.wifi_mesh.device='radio0'
-        set wireless.wifi_mesh.network='mesh'
+        set wireless.wifi_mesh.network='mesh babel_mesh'
         set wireless.wifi_mesh.mode='adhoc'
         set wireless.wifi_mesh.ssid='42:42:42:42:42:42'
         set wireless.wifi_mesh.bssid='42:42:42:42:42:42'

@@ -22,6 +22,7 @@ uci -q batch <<EOF
 	set network.freifunk.ipaddr='$ipv4_addr'
 	set network.@route[0].target='$ipv4_network'
 	set network.fastd.ipaddr='$ipv4_addr'
+	set network.babel_mesh.ipaddr='$ipv4_addr'
 	set network.freifunk.netmask='$ipv4_mask'
 	set network.@route[0].netmask='$ipv4_mask'
 	set network.freifunk.ip6prefix='$ipv6_network'
