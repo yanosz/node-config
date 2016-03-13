@@ -69,7 +69,10 @@ In der Netzwerk konfiguration sind verschiedene Interfaces für Wifi, fastd, VPN
 Darüber hinaus weißt sie dem Node-Interface die konfigurierten IP-Adressen zu und definiert policy-Routing.
 
 ##### OpenVPN - [freifunk/initial_configuration/openvpn.uci](freifunk/initial_configuration/openvpn.uci)
-In der UCI-Datei sind Beispiel-Konfigurationen verschieder VPN-Anbieter realisiert. Die Anbieter-Konfiguration selbst findet sich in [freifunk/vpn](freifunk/vpn).
+In der UCI-Datei sind Beispiel-Konfigurationen verschieder VPN-Anbieter realisiert. Die Anbieter-Konfiguration selbst findet sich in [freifunk/vpn](freifunk/vpn). Dazu musst Du Zertifikat und Key von Deinem VPN-Anbieter im Dateisystem ablegen und den entsprechenden Eintrag in `/etc/config/openvpn` aktvieren. 
+
+- Mullvad - Zertifikat: `/lib/freifunk/vpn/mullvad/mullvad.crt`, Key: `/lib/freifunk/vpn/mullvad/mullvad.key`
+- Freifunk Berlin -  Zertifikat: `/lib/freifunk/vpn/freifunk_berlin/berlin.crt`, Key: `/lib/freifunk/vpn/freifunk_berlin/berlin.key`
 
 ##### Wifi - [freifunk/initial_configuration/wireless.sh](freifunk/initial_configuration/wireless.sh)
 Definiert 2 Wifi-Netze (ad-hoc + AP).

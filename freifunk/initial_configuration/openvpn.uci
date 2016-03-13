@@ -1,7 +1,20 @@
 package openvpn
 
 # OpenVPN-Konfiguration fuer Exit-VPN-Anbieter. 
-# Beispiel fuer mullvad - hier enabled
+# Beispiel fuer mullvad - hier enabled (vgl. https://mullvad.net/en/)
 config openvpn 'mullvad'
-	option enabled '1'
+	option enabled '0'
 	option config '/lib/freifunk/vpn/mullvad/mullvad.conf'
+
+# Freifunk-Berlin - Es gibt TCP und UDP
+# Es sollte nur eins der beiden aktiviert werden
+# Weitere Infos:
+# - https://wiki.freifunk.net/Vpn03
+# - https://wiki.freifunk.net/Vpn03_Admin_Howto
+config openvpn 'berlin_udp'
+	option enabled '1'
+	option config '/lib/freifunk/vpn/freifunk_berlin/udp.conf'
+
+config openvpn 'berlin_tcp'
+	option enabled '0'
+	option config '/lib/freifunk/vpn/freifunk_berlin/tcp.conf'

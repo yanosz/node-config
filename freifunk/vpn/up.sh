@@ -1,4 +1,5 @@
 #!/bin/sh
 
 # Fuege eine Default-Route mit Protokoll 43 der Freifunk-Tabelle (66) hinzu
-ip route add default dev tun0 table 66 proto static 
+# Proto static ist erforderlich, damit es zu hier konfigurierten babel-Export-Rules passt
+ip route add default dev $dev table 66 proto static 
