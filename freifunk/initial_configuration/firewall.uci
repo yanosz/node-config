@@ -100,8 +100,16 @@ config zone
 	option masq '1'
 	option mtu_fix '1'
 
+# SSH-Zugang fuer Wartungszwecke - sicheres Kennwort setzen
+# Diesen Eintrag entfernen, falls keine Fernwartung noetig ist - sonst nicht sicher!
+config rule
+	option name 'Allow SSH (Freifunk)'
+	option src 'freifunk'
+	option dest_port '22'
+	option proto 'tcp'
+	option target 'ACCEPT'
+	
 # Ein Forwarding zwischen VPN und freifunk ist definiert.
 config forwarding
 	option dest 'vpn'
 	option src 'freifunk'
-

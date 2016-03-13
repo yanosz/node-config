@@ -61,6 +61,8 @@ Per fastd wird eine Verbindung zu anderen Nodes aufgebaut, zu denen kein Funkkon
 
 ##### Firewall - [freifunk/initial_configuration/firewall.uci](freifunk/initial_configuration/firewall.uci)
 Die Firewall definiert Zonen für Freifunk und VPN-Tunnel zum Internet. Verkehr zwischen Freifunk und WAN / LAN wird per default unterbunden.
+**Der Node per SSH aus dem Freifunk-Netz erreichbar.** 
+
 
 ##### Netzwerk - [freifunk/initial_configuration/network.uci](freifunk/initial_configuration/network.uci)
 In der Netzwerk konfiguration sind verschiedene Interfaces für Wifi, fastd, VPN definiert um sie in der Firewall zu registieren.

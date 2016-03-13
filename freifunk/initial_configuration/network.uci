@@ -24,8 +24,6 @@ config interface 'freifunk'
 	list ip6class 'vpn6'
 	list ip6class 'freifunk'
 # 	list ip6class 'wan6' # ACHTUNG: Nur aktivieren, wenn Du Dein Internet ohne VPN freigeben willst.
-	option ip4table '66'
-	option ip6table '66'
 
 # Fastd wird hier als interface konfiguriert, damit es in der Firewall
 # referenziert werden kann.
@@ -36,8 +34,8 @@ config interface 'fastd'
 	option proto 'static'
 	option ipaddr '10.159.64.1'
 	option netmask '255.255.255.255'
-	option ip6table '66'
 	option ip4table '66'
+	option ip6table '66'
 
 # Aehnlich zu fastd wird das Interface fuer das Exit-VPN definiert
 # Es kann somit in der Firewall referenziert werden.
@@ -48,19 +46,6 @@ config interface 'vpn'
 	option ip4table '66'
 	option ip6table '66'
 
-# Route in der Freifunk-Tabelle: Konfigurierten Range auf Interface routen
-config route 'route4_node_subnet'
-	option interface 'freifunk'
-	option target '10.159.64.0'
-	option netmask '255.255.255.0'
-	option gateway '0.0.0.0'
-	option table '66'
-
-# Route in der Freifunk-Tabelle: Konfiguriertes ULA-Netz auf Interface routen
-config route6 'route_6_node_subnet'
-	option interface 'freifunk'
-	option target 'fdd3:5d16:b5dd:f064::/64'
-	option table '66'
 
 # Falls der VPN-Provider IPv6 Prefix-Delegation unterstuetzt
 # Wird ein entspr. Prefix abgerufen. Gleichzeit wird Policy-Routing
@@ -77,19 +62,84 @@ config interface 'mesh'
 	option mtu '1532'
 	option mesh 'bat0'
 
-# Routing-Policy: Nutze die Freifunk-Tabelle (66) fuer das Interface
-config rule 'rule_freifunk_iif'
-	option in 'freifunk'
-	option lookup '66'
+# Route in der Freifunk-Tabelle: Konfigurierten Range auf Interface routen
+config route 'route4_node_subnet'
+	option interface 'freifunk'
+	option target '10.159.64.0'
+	option netmask '255.255.255.0'
+	option gateway '0.0.0.0'
+	option table '66'
 
-# Routing-Policy: Nutze die Freifunk-Regel fuer das Interface
-config rule 'rule_freifunk_oif'
-	option out 'freifunk'
-	option lookup '66'
+# Route in der Freifunk-Tabelle: Konfiguriertes ULA-Netz auf Interface routen
+config route6 'route_6_node_subnet'
+	option interface 'freifunk'
+	option target 'fdd3:5d16:b5dd:f064::/64'
+	option table '66'
+
 
 # Addresse: Routing über ipv4
 config interface 'babel_mesh'           
         option proto 'static'           
         option ipaddr '10.159.64.1'     
         option netmask '255.255.255.255'
+        option ip4table '66'
+        option ip6table '66'
 
+config rule 'rule_freifunk_in'
+    option in     'freifunk'
+	option lookup '66'
+	option priority '66'
+
+config rule 'rule_freifunk_out'
+    option out     'freifunk'
+	option lookup '66'
+	option priority '66'
+
+config rule 'rule_iacvpn_in'
+    option in     'fastd'
+	option lookup '66'
+	option priority '66'
+
+config rule 'rule_iacvpn_out'
+    option out    'fastd'
+	option lookup '66'
+	option priority '66'
+
+config rule 'rule_vpn_in'
+    option in 'vpn'
+    option lookup '66'
+	option priority '66'
+
+config rule 'rule_vpn_out'
+    option out 'vpn'
+    option lookup '66'
+	option priority '66'
+
+# Hack: Durch 
+# option ip4table '66' 
+# bei der Network-Definition von babel_mesh wird eine rule mit priority > 80000 erzeugt
+# Die Rule muss aber < main sein, d.h. prioritaet 66 haben
+config rule 'rule_node_ip_high_prio'
+    option src '10.159.64.1/32'
+    option lookup '66'
+    option priority '66'
+
+config rule6 'rule6_freifunk_in'
+    option in     'freifunk'
+	option lookup '66'
+	option priority '66'
+
+config rule6 'rule6_freifunk_out'
+    option out     'freifunk'
+	option lookup '66'
+	option priority '66'
+
+config rule6 'rule6_iacvpn_in'
+    option in     'fastd'
+	option lookup '66'
+	option priority '66'
+
+config rule6 'rule6_iacvpn_out'
+    option out    'fastd'
+	option lookup '66'
+	option priority '66'
