@@ -71,8 +71,21 @@ Darüber hinaus weißt sie dem Node-Interface die konfigurierten IP-Adressen zu 
 ##### OpenVPN - [freifunk/initial_configuration/openvpn.uci](freifunk/initial_configuration/openvpn.uci)
 In der UCI-Datei sind Beispiel-Konfigurationen verschieder VPN-Anbieter realisiert. Die Anbieter-Konfiguration selbst findet sich in [freifunk/vpn](freifunk/vpn). Dazu musst Du Zertifikat und Key von Deinem VPN-Anbieter im Dateisystem ablegen und den entsprechenden Eintrag in `/etc/config/openvpn` aktvieren. 
 
-- Mullvad - Zertifikat: `/lib/freifunk/vpn/mullvad/mullvad.crt`, Key: `/lib/freifunk/vpn/mullvad/mullvad.key`
-- Freifunk Berlin -  Zertifikat: `/lib/freifunk/vpn/freifunk_berlin/berlin.crt`, Key: `/lib/freifunk/vpn/freifunk_berlin/berlin.key`
+- Mullvad 
+    - Zertifikat: `/lib/freifunk/vpn/mullvad/mullvad.crt`
+    - Key: `/lib/freifunk/vpn/mullvad/mullvad.key`
+- Freifunk Berlin 
+    -  Zertifikat: `/lib/freifunk/vpn/freifunk_berlin/berlin.crt`
+    -  Key: `/lib/freifunk/vpn/freifunk_berlin/berlin.key`
+    -  Infos:  https://wiki.freifunk.net/Vpn03
+- Freifunk KBU: 
+    - Zertfikat `/lib/freifunk/vpn/mullvad/mullvad.crt` 
+    - Key: `/lib/freifunk/vpn/mullvad/mullvad.key`
+    - Infos: https://kbu.freifunk.net/wiki/vpn-exit
+- yanosz (Für Tests): 
+    - Zertfikat `/lib/freifunk/vpn/freifunk_kbu/<Deine E-Mail-Adresse>.crt` 
+    - Key: `/lib/freifunk/vpn/freifunk_kbu/<Deine E-Mail-Adresse>.`
+    - Infos: freifunk@yanosz.net
 
 ##### Wifi - [freifunk/initial_configuration/wireless.sh](freifunk/initial_configuration/wireless.sh)
 Definiert 2 Wifi-Netze (ad-hoc + AP).
