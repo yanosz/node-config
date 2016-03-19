@@ -7,11 +7,14 @@ Voraussetzung ist OpenWRT 15.05.1 (Chaos Calmer) mit ausreichend Speicherplatz.
 
 Schnellstart-Anleitung
 ------------------------
-Hinweis: Die IP-Adressen müssen in die Wiki eintragen werden (vgl. :
-
 1. Repository auf dem PC / Laptop klonen `git clone https://github.com/yanosz/node-config.git`
 2. Datei auf den Node kopieren: `cd node-config; scp -r freifunk root@<IP des Nodes>:/lib`
 3. Node installieren: `ssh root@<IP des Nodes> /lib/freifunk/install.sh`
+
+Hinweis: Die IP-Adressen müssen in die Wiki eintragen werden (vgl. : https://kbu.freifunk.net/wiki/index.php?title=IP_Subnetze). Anleitung
+* Freie, möglichst kleine ID suchen - z.B. 69 (hex: 0x045)
+* IPv4-Adresse: 10.159.**69**.1
+* IPv5-Netz: fdd3:5d16:b5dd:f**045**::/64
 
 Internet freigeben?
 ------------------------
@@ -84,7 +87,7 @@ In der UCI-Datei sind Beispiel-Konfigurationen verschieder VPN-Anbieter realisie
     - Infos: https://kbu.freifunk.net/wiki/vpn-exit
 - yanosz (Für Tests): 
     - Zertfikat `/lib/freifunk/vpn/yanosz/<Deine E-Mail-Adresse>.crt` 
-    - Key: `/lib/freifunk/vpn/yanosz/<Deine E-Mail-Adresse>.`
+    - Key: `/lib/freifunk/vpn/yanosz/<Deine E-Mail-Adresse>.key`
     - Infos: freifunk@yanosz.net
 
 ##### Wifi - [freifunk/initial_configuration/wireless.sh](freifunk/initial_configuration/wireless.sh)
