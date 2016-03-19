@@ -79,12 +79,12 @@ In der UCI-Datei sind Beispiel-Konfigurationen verschieder VPN-Anbieter realisie
     -  Key: `/lib/freifunk/vpn/freifunk_berlin/berlin.key`
     -  Infos:  https://wiki.freifunk.net/Vpn03
 - Freifunk KBU: 
-    - Zertfikat `/lib/freifunk/vpn/mullvad/mullvad.crt` 
-    - Key: `/lib/freifunk/vpn/mullvad/mullvad.key`
-    - Infos: https://kbu.freifunk.net/wiki/vpn-exit
-- yanosz (Für Tests): 
     - Zertfikat `/lib/freifunk/vpn/freifunk_kbu/<Deine E-Mail-Adresse>.crt` 
     - Key: `/lib/freifunk/vpn/freifunk_kbu/<Deine E-Mail-Adresse>.`
+    - Infos: https://kbu.freifunk.net/wiki/vpn-exit
+- yanosz (Für Tests): 
+    - Zertfikat `/lib/freifunk/vpn/yanosz/<Deine E-Mail-Adresse>.crt` 
+    - Key: `/lib/freifunk/vpn/yanosz/<Deine E-Mail-Adresse>.`
     - Infos: freifunk@yanosz.net
 
 ##### Wifi - [freifunk/initial_configuration/wireless.sh](freifunk/initial_configuration/wireless.sh)
