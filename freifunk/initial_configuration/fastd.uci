@@ -28,3 +28,25 @@ config fastd 'backbone'
 	list bind 'any:10000'
 	option secret 'generate'
 
+# Exit-VPN uber Freifunk-KBU (paul)
+config fastd 'exit_kbu'
+	option enabled '0'
+	option syslog_level 'warn'
+	option mode 'tap'
+	option interface 'vpn-nat'
+	option mtu '1280'
+	option forward '0'
+	option secure_handshakes '1'
+	list method 'salsa2012+umac'
+	list bind 'any:10001'
+	option secret 'generate'
+
+# Paul - VPN-Exit vpn Freifunk-KBU
+config peer 'exit_kbu_paul'
+	list remote 'ipv6 "paul.kbu.freifunk.net" port 10003'
+	list remote 'ipv4 "paul.kbu.freifunk.net" port 10003'
+	option enabled '1'
+	option net 'exit_kbu'
+	option key '3663f8d53f42ba15cf0e8da986c7bb886b58b0942e518f924719288f166d971d'
+
+

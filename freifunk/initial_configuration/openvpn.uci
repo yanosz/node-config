@@ -12,9 +12,24 @@ config openvpn 'mullvad'
 # - https://wiki.freifunk.net/Vpn03
 # - https://wiki.freifunk.net/Vpn03_Admin_Howto
 config openvpn 'berlin_udp'
-	option enabled '1'
+	option enabled '0'
 	option config '/lib/freifunk/vpn/freifunk_berlin/udp.conf'
 
 config openvpn 'berlin_tcp'
 	option enabled '0'
 	option config '/lib/freifunk/vpn/freifunk_berlin/tcp.conf'
+
+# Freifunk-KBU Exit-VPN
+# Weitere Infos: 
+# - https://kbu.freifunk.net/wiki/vpn-exit
+config openvpn 'freifunk_kbu'
+	option enabled '0'
+	option config '/lib/freifunk/vpn/freifunk_kbu/client.conf'
+
+
+# yanosz Freifunk-Exit-VPN 
+# IdR fuer Tests --- ggf. instabil
+# Falls Zugang gewuenscht bitte mail an freifunk@yanosz.net
+config openvpn 'yanosz'
+	option enabled '0'
+	option config '/lib/freifunk/vpn/yanosz/client.conf'

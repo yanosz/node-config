@@ -41,18 +41,9 @@ config interface 'fastd'
 # Es kann somit in der Firewall referenziert werden.
 # Die IP-Adresse wird jedoch durch den VPN-Provider gesetzt
 config interface 'vpn'
-	option proto 'none'
-	option ifname 'tun0'
+	option proto 'dhcp'
+	option ifname 'vpn-nat'
 	option ip4table '66'
-	option ip6table '66'
-
-
-# Falls der VPN-Provider IPv6 Prefix-Delegation unterstuetzt
-# Wird ein entspr. Prefix abgerufen. Gleichzeit wird Policy-Routing
-# Fuer die entspr. Adressen definiert
-config interface 'vpn6'
-	option proto 'dhcpv6'
-	option ifname 'tun0'
 	option ip6table '66'
 
 # Einige VPN-Tunnel (z.B. Freifunk Berlin) verwendet routed Adressen
@@ -62,6 +53,23 @@ config interface 'vpn_routed'
 	option ifname 'vpn'
 	option ip4table '66'
 	option ip6table '66'
+
+
+# Falls der VPN-Provider IPv6 Prefix-Delegation unterstuetzt
+# Wird ein entspr. Prefix abgerufen. Gleichzeit wird Policy-Routing
+# Fuer die entspr. Adressen definiert
+config interface 'vpn6'
+	option proto 'dhcpv6'
+	option ifname 'vpn-nat'
+	option ip6table '66'
+
+config interface 'vpn6_routed'
+	option proto 'dhcpv6'
+	option ifname 'vpn'
+	option ip6table '66'
+
+
+
 
 # Batman-adv Interface. Definiert, dass batman-adv fuer das mesh
 # Verwendet wird

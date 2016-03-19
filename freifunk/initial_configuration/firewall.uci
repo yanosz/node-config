@@ -100,6 +100,15 @@ config zone
 	option masq '1'
 	option mtu_fix '1'
 
+config rule                               
+        option name 'Allow-ICMPv6-Input (VPN)'     
+        option src 'vpn'                  
+        option proto 'icmp'               
+        option limit '1000/sec'           
+        option family 'ipv6'          
+        option target 'ACCEPT'
+
+
 # SSH-Zugang fuer Wartungszwecke - sicheres Kennwort setzen
 # Diesen Eintrag entfernen, falls keine Fernwartung noetig ist - sonst nicht sicher!
 config rule
