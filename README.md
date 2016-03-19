@@ -90,6 +90,8 @@ In der UCI-Datei sind Beispiel-Konfigurationen verschieder VPN-Anbieter realisie
 ##### Wifi - [freifunk/initial_configuration/wireless.sh](freifunk/initial_configuration/wireless.sh)
 Definiert 2 Wifi-Netze (ad-hoc + AP).
 
+Es wird nur das 1. Wifi-Interface (radio0) konfiguriert - idR 2.4 Ghz.
+
 **Achtung:** Bei Anwendung wird ein vorhandenes OpenWRT Wifi gelöscht, da sonst ein unverschlüsselter Accesspoint für das LAN-Netz erstellt werden könnte.
 
 
