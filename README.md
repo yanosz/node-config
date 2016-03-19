@@ -11,7 +11,7 @@ Schnellstart-Anleitung
 2. Datei auf den Node kopieren: `cd node-config; scp -r freifunk root@<IP des Nodes>:/lib`
 3. Node installieren: `ssh root@<IP des Nodes> /lib/freifunk/install.sh`
 
-Hinweis: Die IP-Adressen müssen in die Wiki eintragen werden -  https://kbu.freifunk.net/wiki/index.php?title=IP_Subnetze#Dezentrale_Nodes
+Hinweis: Je nach Community sollten die IP-Adressen in eine Wiki eingetragen werden - für Freifunk KBU:  https://kbu.freifunk.net/wiki/index.php?title=IP_Subnetze#Dezentrale_Nodes
 
 Internet freigeben?
 ------------------------
