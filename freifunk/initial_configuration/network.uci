@@ -41,7 +41,7 @@ config interface 'fastd'
 # Es kann somit in der Firewall referenziert werden.
 # Die IP-Adresse wird jedoch durch den VPN-Provider gesetzt
 config interface 'vpn'
-	option proto 'dhcp'
+	option proto 'none'
 	option ifname 'vpn-nat'
 	option ip4table '66'
 	option ip6table '66'
@@ -67,9 +67,6 @@ config interface 'vpn6_routed'
 	option proto 'dhcpv6'
 	option ifname 'vpn'
 	option ip6table '66'
-
-
-
 
 # Batman-adv Interface. Definiert, dass batman-adv fuer das mesh
 # Verwendet wird
