@@ -13,6 +13,11 @@ Schnellstart-Anleitung
 
 Hinweis: Je nach Community sollten die IP-Adressen in eine Wiki eingetragen werden - für Freifunk KBU:  https://kbu.freifunk.net/wiki/index.php?title=IP_Subnetze#Dezentrale_Nodes
 
+Bekannte Probleme
+-----------------------
+1. Die DHCPv6-Prefix delegation im ad-hoc Netz ist ungetestet und wahrscheinlich kaputt
+2. Bislang sind nur pptp aber keine OpenVPN-ISPs eingetragen.
+
 Internet freigeben?
 ------------------------
 Du kannst das Internet entweder über einen VPN-Tunnel oder direkt freigeben:
