@@ -5,7 +5,7 @@ Du kannst die Konfiguration auf Deinen Node kopieren, anpassen und anwenden.
 
 Voraussetzung ist OpenWRT 15.05.1 (Chaos Calmer) mit ausreichend Speicherplatz. Der Node muss mit dem Internet (WAN-Port) und einem PC / Notebook (LAN-Port) verbunden werden.
 
-Auf dem Node wird die Wifi-Konfiguration geändert - damit ist die Instalaltion über WLAN nicht möglich. 
+Auf dem Node wird die Wifi-Konfiguration geändert - damit ist die Installation über Wifi (wlan) nicht möglich. 
 
 Schnellstart-Anleitung
 ------------------------
