@@ -166,3 +166,24 @@ config rule6 'rule6_iacvpn_out'
     option out    'fastd'
 	option lookup '66'
 	option priority '66'
+
+# Traffic aus dem babel-mesh nutzt auch tabelle 66
+config rule 'rule_babel_in'         
+        option in 'babel_mesh'      
+        option lookup '66'          
+        option priority '66'        
+                                    
+config rule 'rule_babel_out'        
+        option out 'babel_mesh'     
+        option lookup '66'          
+        option priority '66' 
+
+config rule6 'rule6_babel_in'         
+        option in 'babel_mesh'      
+        option lookup '66'          
+        option priority '66'        
+                                    
+config rule6 'rule6_babel_out'        
+        option out 'babel_mesh'     
+        option lookup '66'          
+        option priority '66' 

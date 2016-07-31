@@ -7,13 +7,23 @@ Voraussetzung ist OpenWRT 15.05.1 (Chaos Calmer) mit ausreichend Speicherplatz u
 
 Schnellstart-Anleitung
 ------------------------
+#### Vorbereitung
+1. Installiere OpenWRT auf dem Router installieren
+2. Node mit dem Notebook (LAN-Port) und dem Internet (WAN-Port) verbinden.
+3. Kennwort auf dem Router setzen
+
+#### Los geht's
 1. Repository auf dem PC / Laptop klonen `git clone https://github.com/yanosz/node-config.git`
-2. Datei auf den Node kopieren: `cd node-config; scp -r freifunk root@<IP des Nodes>:/lib`
-3. Node installieren: `ssh root@<IP des Nodes> /lib/freifunk/install.sh`
+2. Datei auf den Node kopieren: `cd node-config; scp -r freifunk root@192.168.1.1:/lib`
+3. Node installieren: `ssh root@192.168.1.1 /lib/freifunk/install.sh`
 
 Achtung: Wenn bei der Ausführung des Scripts ein Fehler auftritt, muss der Node neu installiert werden, da es nur bei einer frischen OpenWRT-Installation korrekt funktioniert. Achte daher unbedingt auf eine funktionierende Internet-Verbindung, damit die erforderlichen Downloads durchgeführt werden können.
 
 Hinweis: Je nach Community sollten die IP-Adressen in eine Wiki eingetragen werden - für Freifunk KBU:  https://kbu.freifunk.net/wiki/index.php?title=IP_Subnetze#Dezentrale_Nodes
+=======
+Hinweis: 
+* Je nach Community sollten die IP-Adressen in eine Wiki eingetragen werden - für Freifunk KBU:  https://kbu.freifunk.net/wiki/index.php?title=IP_Subnetze#Dezentrale_Nodes
+* `192.168.1.1` ist die LAN-IP des Routers - ggf. anpassen.
 
 Bekannte Probleme
 -----------------------
