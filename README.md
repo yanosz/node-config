@@ -16,7 +16,7 @@ Schnellstart-Anleitung
 
 #### Hinweis: 
 * Je nach Community sollten die IP-Adressen in eine Wiki eingetragen werden - für Freifunk KBU:  https://kbu.freifunk.net/wiki/index.php?title=IP_Subnetze#Dezentrale_Nodes
-* `192.168.1.1` ist die LAN-IP des Routers - ggf. anpassen.
+* `192.168.1.1` steht für die LAN IP-Adresse des Routers. Es muss angepasst werden, wenn die LAN IP-Adresse des Routers geändert wurde.
 
 
 Bekannte Probleme
