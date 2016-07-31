@@ -3,7 +3,7 @@ Worum geht's?
 Dieses Projekt enthält einige Konfigurationsdateien, die beispielhaft für einen Freifunk-Node verwendet werden können.
 Du kannst die Konfiguration auf Deinen Node kopieren, anpassen und anwenden.
 
-Voraussetzung ist OpenWRT 15.05.1 (Chaos Calmer) mit ausreichend Speicherplatz. Der Node muss mit dem Internet (WAN-Port) und Deinem Notebook (LAN-Port) verbunden werden.
+Voraussetzung ist OpenWRT 15.05.1 (Chaos Calmer) mit ausreichend Speicherplatz. Der Node muss mit dem Internet (WAN-Port) und einem PC / Notebook (LAN-Port) verbunden werden.
 
 Auf dem Node wird die Wifi-Konfiguration geändert - damit ist die Instalaltion über WLAN nicht möglich. 
 
@@ -15,7 +15,7 @@ Schnellstart-Anleitung
 3. Node installieren: `ssh root@192.168.1.1 /lib/freifunk/install.sh`
 
 Hinweis: Je nach Community sollten die IP-Adressen in eine Wiki eingetragen werden - für Freifunk KBU:  https://kbu.freifunk.net/wiki/index.php?title=IP_Subnetze#Dezentrale_Nodes
-=======
+
 Hinweis: 
 * Je nach Community sollten die IP-Adressen in eine Wiki eingetragen werden - für Freifunk KBU:  https://kbu.freifunk.net/wiki/index.php?title=IP_Subnetze#Dezentrale_Nodes
 * `192.168.1.1` ist die LAN-IP des Routers - ggf. anpassen.
