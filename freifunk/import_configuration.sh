@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# Das Script kann nur einmal ausgeführt werden
+if [ -f /lib/freifunk/config_import_done ];then
+  echo "Konfiguration wurde bereits importiert"
+  exit 0
+fi
+touch /lib/freifunk/config_import_done
+
 # Importiere vorhandene Konfiguration
 # Firwall und ebtables haben eine Sonderrolle: 
 # Die Konfiguration kann nicht einfach per uci merged werden und wird per Script aufgenommen

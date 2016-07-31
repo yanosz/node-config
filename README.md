@@ -3,21 +3,16 @@ Worum geht's?
 Dieses Projekt enthält einige Konfigurationsdateien, die beispielhaft für einen Freifunk-Node verwendet werden können.
 Du kannst die Konfiguration auf Deinen Node kopieren, anpassen und anwenden.
 
-Voraussetzung ist OpenWRT 15.05.1 (Chaos Calmer) mit ausreichend Speicherplatz und eine Internet-Verbiund auf dem Node. 
+Voraussetzung ist OpenWRT 15.05.1 (Chaos Calmer) mit ausreichend Speicherplatz. Der Node muss mit dem Internet (WAN-Port) und Deinem Notebook (LAN-Port) verbunden werden.
+
+Auf dem Node wird die Wifi-Konfiguration geändert - damit ist die Instalaltion über WLAN nicht möglich. 
 
 Schnellstart-Anleitung
 ------------------------
-#### Vorbereitung
-1. Installiere OpenWRT auf dem Router installieren
-2. Node mit dem Notebook (LAN-Port) und dem Internet (WAN-Port) verbinden.
-3. Kennwort auf dem Router setzen
-
 #### Los geht's
 1. Repository auf dem PC / Laptop klonen `git clone https://github.com/yanosz/node-config.git`
 2. Datei auf den Node kopieren: `cd node-config; scp -r freifunk root@192.168.1.1:/lib`
 3. Node installieren: `ssh root@192.168.1.1 /lib/freifunk/install.sh`
-
-Achtung: Wenn bei der Ausführung des Scripts ein Fehler auftritt, muss der Node neu installiert werden, da es nur bei einer frischen OpenWRT-Installation korrekt funktioniert. Achte daher unbedingt auf eine funktionierende Internet-Verbindung, damit die erforderlichen Downloads durchgeführt werden können.
 
 Hinweis: Je nach Community sollten die IP-Adressen in eine Wiki eingetragen werden - für Freifunk KBU:  https://kbu.freifunk.net/wiki/index.php?title=IP_Subnetze#Dezentrale_Nodes
 =======
@@ -25,9 +20,12 @@ Hinweis:
 * Je nach Community sollten die IP-Adressen in eine Wiki eingetragen werden - für Freifunk KBU:  https://kbu.freifunk.net/wiki/index.php?title=IP_Subnetze#Dezentrale_Nodes
 * `192.168.1.1` ist die LAN-IP des Routers - ggf. anpassen.
 
+
 Bekannte Probleme
 -----------------------
 1. Die DHCPv6-Prefix delegation im ad-hoc Netz ist ungetestet und wahrscheinlich kaputt
+2. batman-adv kann nicht installiert werden (https://dev.openwrt.org/ticket/22930) - Workaround: https://openwrt.yanosz.net/ als feed nutzen. TODO: Nutzung dokumentieren
+ 
 
 Internet freigeben?
 ------------------------
@@ -45,8 +43,10 @@ Wenn Dein Node lediglich 4 MB Flash hat (z.B. TP-Link WR841n), dann musst Du ein
 wget https://downloads.openwrt.org/chaos_calmer/15.05.1/ar71xx/generic/OpenWrt-ImageBuilder-15.05.1-ar71xx-generic.Linux-x86_64.tar.bz2
 tar xjf OpenWrt-ImageBuilder-15.05.1-ar71xx-generic.Linux-x86_64.tar.bz2
 cd OpenWrt-ImageBuilder-15.05.1-ar71xx-generic.Linux-x86_64
+echo "src/gz yanosz_chaos_calmer_base https://openwrt.yanosz.net/ar71xx/packages/base" >> repositories.conf
 make image PROFILE="TLWR841" PACKAGES="ip openvpn-polarssl babeld fastd ebtables kmod-ebtables-ipv4 owipcalc batctl haveged"
 ```
+Hinweis: https://openwrt.yanosz.net/ar71xx/packages/base muss aufgenommen werden, da batman-adv sonst nicht zur Verfügung steht.
 
 Die Details
 -----------------------
