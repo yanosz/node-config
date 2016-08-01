@@ -21,7 +21,7 @@ case $(opkg print-architecture) in
   *ar71xx*)
     import_feeds ar71xx
     ;;
-  *x86**)
+  *x86*)
     import_feeds x86
     ;;
   *)
