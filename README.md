@@ -22,8 +22,7 @@ Schnellstart-Anleitung
 Bekannte Probleme
 -----------------------
 1. Die DHCPv6-Prefix delegation im ad-hoc Netz ist ungetestet und wahrscheinlich kaputt
-2. batman-adv kann nicht installiert werden (https://dev.openwrt.org/ticket/22930) - Workaround: https://openwrt.yanosz.net/ als feed nutzen. TODO: Nutzung dokumentieren
- 
+
 
 Internet freigeben?
 ------------------------
@@ -44,8 +43,6 @@ cd OpenWrt-ImageBuilder-15.05.1-ar71xx-generic.Linux-x86_64
 echo "src/gz yanosz_chaos_calmer_base https://openwrt.yanosz.net/ar71xx/packages/base" >> repositories.conf
 make image PROFILE="TLWR841" PACKAGES="ip openvpn-polarssl babeld fastd ebtables kmod-ebtables-ipv4 owipcalc batctl haveged"
 ```
-Hinweis: https://openwrt.yanosz.net/ar71xx/packages/base muss aufgenommen werden, da batman-adv sonst nicht zur Verfügung steht.
-
 Die Details
 -----------------------
 #### Shell-Scripts
@@ -54,6 +51,8 @@ Shell-Scripts installieren die Konfiguration auf dem Node. Es gibt:
 * [freifunk/import_configuration.sh](freifunk/import_configuration.sh) - Importiert die Konfiguration
 * [freifunk/set_ip.sh](freifunk/set_ip.sh) - Setzt IP-Adressen und Subnets des Nodes in der kompletten Konfiguration
 * [freifunk/install.sh](freifunk/install.sh) - Ruft die anderen Scripts in der richtigen Reihenfolge auf
+* [freifunk/import_feeds.sh](freifunk/import_feeds.sh) - Importiert feeds von https://openwrt.yanosz.net für batman-adv, gluon-Pakete. [signing key](/freifunk/keys) - Siehe auch: https://dev.openwrt.org/ticket/22930 
+
 
 #### Konfiguration
 Die Konfiguration sind .uci-Settings die importiert wird. Ausnahmen: ebtables und wireless. Hier können keine .uci-Settings merged werden. Ich geb' hier nur eine grobe Übersicht über die enthaltene Konfiguration. **Alle Dateien sind ausführlich kommentiert. Details findest in den Files selbst**. 
