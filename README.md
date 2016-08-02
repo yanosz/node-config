@@ -64,7 +64,9 @@ uci commit
 ```
 Als fastd-Peer in gluon muss die LAN-Adresse Deines Nodes (z.B. `192.168.1.1`) und der fastd Public-Key eintragen werden. Überprüfe, dass der fastd-Peer der einzige konfigurierte Peer ist, damit Du nicht beide Kollisionsdomänen verbindest.
 
-Der letzte Befehl zeigt den fastd Public-Key. Nun kannst Du die WAN-Ports der Gluon-Router (blauer Port) mit den LAN-Ports Deines Routers (gelber Port) verbinden. 
+Der letzte Befehl zeigt den fastd Public-Key. Nun kannst Du die WAN-Ports der Gluon-Router (blauer Port) mit den LAN-Ports des Routers (gelbe Ports) verbinden. 
+
+In den [Feeds](https://openwrt.yanosz.net/openwrt-15.05.1/) sind Gluon-Pakete wie bspw. `kmod-batman-adv-legacy` enthalten, die bei Bedarf installiert werden können.
 
 Die Details
 -----------------------
