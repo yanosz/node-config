@@ -3,7 +3,7 @@
 
 #Check if platform is already processd
 if [ -f "/lib/freifunk/import_feeds_run" ];then
-	echo "Feeds wurden bereits importiert - losche /lib/freifunk/import_feeds_run um sie erneut zu importieren"
+	echo "Feeds wurden bereits importiert - loesche /lib/freifunk/import_feeds_run um sie erneut zu importieren"
 	exit 0;
 fi
 
