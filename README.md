@@ -14,6 +14,7 @@ Schnellstart-Anleitung
 #### Los geht's
 
 Führe folgende Befehle auf Deinem PC oder Laptop aus:
+
 1. Repository klonen `git clone https://github.com/yanosz/node-config.git`
 2. Datei auf den Node kopieren: `cd node-config; scp -r freifunk root@192.168.1.1:/lib`
 3. Node installieren: `ssh root@192.168.1.1 /lib/freifunk/install.sh`
@@ -95,6 +96,8 @@ Multicast / Anycast im batman-adv Mesh wird stark eingeschränkt, da das mesh nu
 
 ##### fastd - [freifunk/initial_configuration/fastd.uci](freifunk/initial_configuration/fastd.uci)
 Per fastd wird eine Verbindung zu anderen Nodes aufgebaut, zu denen kein Funkkontakt besteht. Testweise ist ein Node mit Zugang zum ICVPN hinterlegt. Zum Routing wird babeld verwendet.
+
+Eine weitere fastd-Instanz zum Betrieb eines lokalen Supernodes in Gluon-Netzen ist vorhanden, aber deaktivert.
 
 ##### Firewall - [freifunk/initial_configuration/firewall.uci](freifunk/initial_configuration/firewall.uci)
 Die Firewall definiert Zonen für Freifunk und VPN-Tunnel zum Internet. Verkehr zwischen Freifunk und WAN / LAN wird per default unterbunden.
