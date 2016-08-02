@@ -7,4 +7,6 @@ config mesh 'bat0'
 	option orig_interval '5000'
 	option bridge_loop_avoidance '1'
 	option gw_mode 'server'
+	option fragmentation '1'
+	option aggregated_ogms '1'
 
