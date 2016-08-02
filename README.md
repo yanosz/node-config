@@ -13,7 +13,8 @@ Schnellstart-Anleitung
 ------------------------
 #### Los geht's
 
-1. Repository auf dem PC / Laptop klonen `git clone https://github.com/yanosz/node-config.git`
+Führe folgende Befehle auf Deinem PC oder Laptop aus:
+1. Repository klonen `git clone https://github.com/yanosz/node-config.git`
 2. Datei auf den Node kopieren: `cd node-config; scp -r freifunk root@192.168.1.1:/lib`
 3. Node installieren: `ssh root@192.168.1.1 /lib/freifunk/install.sh`
 
