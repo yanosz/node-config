@@ -10,6 +10,8 @@ Auf dem Node wird die Wifi-Konfiguration geändert - damit ist die Installation 
 Schnellstart-Anleitung
 ------------------------
 #### Los geht's
+
+Öffne eine Linux-Shell:
 1. Repository auf dem PC / Laptop klonen `git clone https://github.com/yanosz/node-config.git`
 2. Datei auf den Node kopieren: `cd node-config; scp -r freifunk root@192.168.1.1:/lib`
 3. Node installieren: `ssh root@192.168.1.1 /lib/freifunk/install.sh`
