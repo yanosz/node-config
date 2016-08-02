@@ -7,7 +7,7 @@ Voraussetzung ist OpenWRT 15.05.1 (Chaos Calmer) mit ausreichend Speicherplatz. 
 
 Auf dem Node wird die Wifi-Konfiguration geändert - damit ist die Installation über Wifi (wlan) nicht möglich. 
 
-In der Anleitung gehe ich davon aus, dass Du mit der Konsole aus Linux (Mac OS, Unix, usw.) vertraut bist, git installiert ist und Dich per `ssh` mit dem OpenWRT-Router verbinden kannst. Evtl. musst Du noch Software installieren - auf Windows z.B. cygwin mit bash, git und ssh.
+In der Anleitung gehe ich davon aus, dass Du mit der Konsole aus Linux (Mac OS, Unix, usw.) vertraut bist, git installiert ist und Du Dich per `ssh` mit dem OpenWRT-Router verbinden kannst. Evtl. musst Du noch Software installieren - auf Windows z.B. cygwin mit bash, git und ssh.
 
 Schnellstart-Anleitung
 ------------------------
