@@ -80,7 +80,7 @@ Shell-Scripts installieren die Konfiguration auf dem Node. Es gibt:
 
 
 #### Konfiguration
-Die Konfiguration sind .uci-Settings die importiert wird. Ausnahmen: ebtables und wireless. Hier können keine .uci-Settings merged werden. Ich geb' hier nur eine grobe Übersicht über die enthaltene Konfiguration. **Alle Dateien sind ausführlich kommentiert. Details findest in den Files selbst**. 
+Die Konfiguration sind .uci-Dateien die importiert werden - ausgenommen ebtables und wireless: Die UCI-Einstellungen werden dynamisch per Shellscript generiert. Ich geb' hier nur eine grobe Übersicht über die enthaltene Konfiguration. **Alle Dateien sind ausführlich kommentiert. Details findest in den Files selbst**. 
 
 ##### Babeld - [freifunk/initial_configuration/babeld.uci](freifunk/initial_configuration/babeld.uci)
 babeld wird als Routing-Protokoll genutzt. Es nutzt sowohl das ad-hoc Interface zum meshing und ein fastd-Interface zur Anbindung an weitere Supernodes und das ICVPN.
