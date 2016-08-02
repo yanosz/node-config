@@ -9,4 +9,4 @@ config mesh 'bat0'
 	option gw_mode 'server'
 	option fragmentation '1'
 	option aggregated_ogms '1'
-
+	option distributed_arp_table '1'
