@@ -75,6 +75,14 @@ config interface 'mesh'
 	option mtu '1532'
 	option mesh 'bat0'
 
+# Lokaler Supernode - Kompatibel zu gluon
+# Die MTU muss ggf. angepasst werden
+config interface 'supernode'
+	option enabled '0'
+	option proto 'batadv'
+	option mtu '1312'
+	option mesh 'bat0'
+	
 # Route in der Freifunk-Tabelle: Konfigurierten Range auf Interface routen
 config route 'route4_node_subnet'
 	option interface 'freifunk'
