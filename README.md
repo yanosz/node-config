@@ -64,9 +64,9 @@ uci commit
 
 /etc/init.d/fastd show_key kbu_supernode
 ```
-Der letzte Befehl zeigt den fastd Public-Key. Nun kannst Du die WAN-Ports der Gluon-Router (blauer Port) mit den LAN-Ports Deines Routers (gelber Port) verbinden. 
-
 Als fastd-Peer in gluon muss die LAN-Adresse Deines Nodes (z.B. `192.168.1.1`) und der fastd Public-Key eintragen werden. Überprüfe, dass der fastd-Peer der einzige konfigurierte Peer ist, damit Du nicht beide Kollisionsdomänen verbindest.
+
+Der letzte Befehl zeigt den fastd Public-Key. Nun kannst Du die WAN-Ports der Gluon-Router (blauer Port) mit den LAN-Ports Deines Routers (gelber Port) verbinden. 
 
 Die Details
 -----------------------
