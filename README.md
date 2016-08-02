@@ -43,6 +43,26 @@ cd OpenWrt-ImageBuilder-15.05.1-ar71xx-generic.Linux-x86_64
 echo "src/gz yanosz_chaos_calmer_base https://openwrt.yanosz.net/ar71xx/packages/base" >> repositories.conf
 make image PROFILE="TLWR841" PACKAGES="ip openvpn-polarssl babeld fastd ebtables kmod-ebtables-ipv4 owipcalc batctl haveged"
 ```
+
+Lokaler Supernode
+---------------------
+Wenn Du den Node als Supernode für ein Gluon-basiertes Netz nutzen willst, musst Du zunächst fastd dafür aktivieren und die Services neu starten.
+Verbinde Dich hierzu per SSH zu Deinem Node und führe die folgenden Befehle aus:
+
+```bash
+uci set fastd.kbu_supernode.enabled=1
+uci set network.supernode.enabled=1
+uci commit
+
+/etc/init.d/fastd restart
+/etc/init.d/network restart
+
+/etc/init.d/fastd show_key kbu_supernode
+```
+Der letzte Befehl zeigt den fastd Public-Key. Nun kannst Du die WAN-Ports der Gluon-Router (blauer Port) mit den LAN-Ports Deines Routers (gelber Port) verbinden. 
+
+Als fastd-Peer in gluon musst die LAN-Adresse Deines Nodes (z.B. `192.168.1.1`) und den fastd Public-Key eintragen. Überprüfe, dass der fastd-Peer der einzige konfigurierte Peer ist, damit Du nicht beide Kollisionsdomänen verbindest.
+
 Die Details
 -----------------------
 #### Shell-Scripts

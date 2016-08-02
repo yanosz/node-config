@@ -78,7 +78,8 @@ config interface 'mesh'
 # Lokaler Supernode - Kompatibel zu gluon
 # Die MTU muss ggf. angepasst werden
 config interface 'supernode'
-	option enabled '0'
+	option ifname 'tap-supernode'
+        option enabled '0'
 	option proto 'batadv'
 	option mtu '1312'
 	option mesh 'bat0'
