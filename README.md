@@ -7,11 +7,12 @@ Voraussetzung ist OpenWRT 15.05.1 (Chaos Calmer) mit ausreichend Speicherplatz. 
 
 Auf dem Node wird die Wifi-Konfiguration geändert - damit ist die Installation über Wifi (wlan) nicht möglich. 
 
+In der Anleitung gehe ich davon aus, dass Du mit der Konsole aus Linux (Mac OS, Unix, usw.) vertraut bist, git installiert ist und Dich per `ssh` mit dem OpenWRT-Router verbinden kannst. Evtl. musst Du noch Software installieren - auf Windows z.B. cygwin mit bash, git und ssh.
+
 Schnellstart-Anleitung
 ------------------------
 #### Los geht's
 
-Öffne eine Linux-Shell:
 1. Repository auf dem PC / Laptop klonen `git clone https://github.com/yanosz/node-config.git`
 2. Datei auf den Node kopieren: `cd node-config; scp -r freifunk root@192.168.1.1:/lib`
 3. Node installieren: `ssh root@192.168.1.1 /lib/freifunk/install.sh`
