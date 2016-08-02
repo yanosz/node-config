@@ -28,6 +28,20 @@ config fastd 'backbone'
 	list bind 'any:10000'
 	option secret 'generate'
 
+# Lokaler Supernode - kompatibel zu gluon, etc.
+config fastd 'kbu_supernode'
+	option enabled '0'
+	option syslog_level 'warn'
+	option mode 'tap'
+	option interface 'tap-supernode'
+	option mtu '1312' 
+	option forward '0'
+	option secure_handshakes '1'
+	list method 'salsa2012+umac'
+	list method 'null'
+	list bind 'any:10001'
+	option secret 'generate'
+
 # Exit-VPN uber Freifunk-KBU (paul)
 config fastd 'exit_kbu'
 	option enabled '0'
