@@ -49,7 +49,7 @@ echo "src/gz yanosz_chaos_calmer_base https://openwrt.yanosz.net/ar71xx/packages
 make image PROFILE="TLWR841" PACKAGES="ip openvpn-polarssl babeld fastd ebtables kmod-ebtables-ipv4 owipcalc batctl haveged"
 ```
 
-Um den PPTP-VPN-Client nutzen zu können, musst Du auf openssl-Verzichten. Aufruf:
+Um den PPTP-VPN-Client nutzen zu können, musst Du auf openssl verzichten. Ersetze dazu den letzten Befehl:
 ```bash
 make image PROFILE="TLWR841" PACKAGES="ip babeld fastd ebtables kmod-ebtables-ipv4 owipcalc batctl haveged kmod-nf-nathelper-extra kmod-pptp ppp-mod-pptp"
 ```
