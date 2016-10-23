@@ -49,6 +49,12 @@ echo "src/gz yanosz_chaos_calmer_base https://openwrt.yanosz.net/ar71xx/packages
 make image PROFILE="TLWR841" PACKAGES="ip openvpn-polarssl babeld fastd ebtables kmod-ebtables-ipv4 owipcalc batctl haveged"
 ```
 
+Um den PPTP-VPN-Client nutzen zu können, musst Du auf openssl-Verzichten. Aufruf:
+```bash
+make image PROFILE="TLWR841" PACKAGES="ip babeld fastd ebtables kmod-ebtables-ipv4 owipcalc batctl haveged kmod-nf-nathelper-extra kmod-pptp ppp-mod-pptp"
+```
+
+
 Lokaler Supernode?
 ---------------------
 Wenn Du den Node als Supernode für ein Gluon-basiertes Netz nutzen willst, musst Du zunächst fastd dafür aktivieren und die Services neu starten.
@@ -107,6 +113,8 @@ Die Firewall definiert Zonen für Freifunk und VPN-Tunnel zum Internet. Verkehr 
 ##### Netzwerk - [freifunk/initial_configuration/network.uci](freifunk/initial_configuration/network.uci)
 In der Netzwerk konfiguration sind verschiedene Interfaces für Wifi, fastd, VPN definiert um sie in der Firewall zu registieren.
 Darüber hinaus weißt sie dem Node-Interface die konfigurierten IP-Adressen zu und definiert policy-Routing.
+
+Hier gibt es auch eine Konfiguration für PPTP - falls Du ein entsprechendes VPN verwenden willst.
 
 ##### OpenVPN - [freifunk/initial_configuration/openvpn.uci](freifunk/initial_configuration/openvpn.uci)
 In der UCI-Datei sind Beispiel-Konfigurationen verschieder VPN-Anbieter realisiert. Die Anbieter-Konfiguration selbst findet sich in [freifunk/vpn](freifunk/vpn). Dazu musst Du Zertifikat und Key von Deinem VPN-Anbieter im Dateisystem ablegen und den entsprechenden Eintrag in `/etc/config/openvpn` aktvieren. 

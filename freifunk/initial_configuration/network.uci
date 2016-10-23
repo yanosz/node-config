@@ -68,6 +68,28 @@ config interface 'vpn6_routed'
 	option ifname 'vpn'
 	option ip6table '66'
 
+# VPN - falls PPTP verwendet wird
+# Server sind bspw.
+# - omni.freifunk-koeln.de
+# - yagi.freifunk-koeln.de
+# Accounts: E-Mail an vpn@freifunk-koeln.de
+config interface 'vpn_pptp'
+        option enabled '0'
+        option proto 'pptp'
+        option server 'omni.freifunk-koeln.de'
+        option username 'user'
+        option password 'passwort'
+        option ip4table '66'
+        option ip6table '66'
+
+config interface 'vpn_pptp6'
+        option enabled '0'
+        option proto 'dhcpv6'
+        option ifname 'pptp-vpn_pptp'
+        option ip6table '66'
+
+
+
 # Batman-adv Interface. Definiert, dass batman-adv fuer das mesh
 # Verwendet wird
 config interface 'mesh'
