@@ -34,6 +34,7 @@ config interface
 	option ifname 'wlan0'
 	option wired 'false'
 
+
 # fastd - Roaming (Peering) ueber WAN oder andere Netze
 config interface
 	option ifname 'tap-fastd'
