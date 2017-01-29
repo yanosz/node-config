@@ -97,6 +97,13 @@ config interface 'mesh'
 	option mtu '1532'
 	option mesh 'bat0'
 
+# Variante fuer 5 Ghz
+config interface 'mesh5'
+        option proto 'batadv'
+        option mtu '1532'
+        option mesh 'bat0'
+
+
 # Lokaler Supernode - Kompatibel zu gluon
 # Die MTU muss ggf. angepasst werden
 config interface 'supernode'
@@ -125,6 +132,14 @@ config route6 'route_6_node_subnet'
 config interface 'babel_mesh'           
         option proto 'static'           
         option ipaddr '10.159.64.1'     
+        option netmask '255.255.255.255'
+        option ip4table '66'
+        option ip6table '66'
+
+# Variante fuer 5 Ghz
+config interface 'babel_mesh'
+        option proto 'static'
+        option ipaddr '10.159.64.1'
         option netmask '255.255.255.255'
         option ip4table '66'
         option ip6table '66'
