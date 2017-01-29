@@ -27,19 +27,19 @@ uci -q batch <<EOF
         set wireless.wifi_mesh.bssid='42:42:42:42:42:42'
         set wireless.wifi_mesh.mcast_rate='12000'
         
-	set wireless.wifi_freifunk='wifi-iface'         # 1. WLAN: Accesspoint - 5 Ghz
-        set wireless.wifi_freifunk.device='radio1'
-        set wireless.wifi_freifunk.network='freifunk'
-        set wireless.wifi_freifunk.mode='ap'
-        set wireless.wifi_freifunk.ssid='Freifunk'
+	set wireless.wifi_freifunk5='wifi-iface'         # 1. WLAN: Accesspoint - 5 Ghz
+        set wireless.wifi_freifunk5.device='radio1'
+        set wireless.wifi_freifunk5.network='freifunk'
+        set wireless.wifi_freifunk5.mode='ap'
+        set wireless.wifi_freifunk5.ssid='Freifunk'
 
-        set wireless.wifi_mesh='wifi-iface'             # 2. WLAN: Ad-Hoc Mesh - 5 Ghz
-        set wireless.wifi_mesh.device='radio1'
-        set wireless.wifi_mesh.network='mesh5 babel_mesh5'
-        set wireless.wifi_mesh.mode='adhoc'
-        set wireless.wifi_mesh.ssid='42:42:42:42:42:42'
-        set wireless.wifi_mesh.bssid='42:42:42:42:42:42'
-        set wireless.wifi_mesh.mcast_rate='12000'
+        set wireless.wifi_mesh5='wifi-iface'             # 2. WLAN: Ad-Hoc Mesh - 5 Ghz
+        set wireless.wifi_mesh5.device='radio1'
+        set wireless.wifi_mesh5.network='mesh5 babel_mesh5'
+        set wireless.wifi_mesh5.mode='adhoc'
+        set wireless.wifi_mesh5.ssid='42:42:42:42:42:42'
+        set wireless.wifi_mesh5.bssid='42:42:42:42:42:42'
+        set wireless.wifi_mesh5.mcast_rate='12000'
 
 
 	
