@@ -20,7 +20,9 @@ uci -q batch <<EOF
 	set network.route4_node_subnet.target='$ipv4_network'
 	set network.fastd.ipaddr='$ipv4_addr'
 	set network.babel_mesh.ipaddr='$ipv4_addr'
-	set network.freifunk.ip6prefix='$ipv6_network'
+	set network.babel_mesh5.ipaddr='$ipv4_addr'
+
+        set network.freifunk.ip6prefix='$ipv6_network'
 	set network.route_6_node_subnet.target='$ipv6_network'
 	set network.rule_node_ip_high_prio.src='$ipv4_addr/32'
 	commit network
