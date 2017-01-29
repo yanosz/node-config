@@ -98,8 +98,8 @@ config zone
 	option forward 'ACCEPT'
 	option output 'ACCEPT'
 	option input 'REJECT'
-	option network 'vpn'
-	option name 'vpn vpn6 vpn_pptp vpn_pptp6'
+	option name 'vpn'
+	option network 'vpn vpn6 vpn_pptp vpn_pptp6'
 	option masq '1'
 	option mtu_fix '1'
 
