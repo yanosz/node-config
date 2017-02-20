@@ -132,7 +132,7 @@ In der UCI-Datei sind Beispiel-Konfigurationen verschieder VPN-Anbieter realisie
 ##### Wifi - [freifunk/initial_configuration/wireless.sh](freifunk/initial_configuration/wireless.sh)
 Definiert 2 Wifi-Netze (ad-hoc + AP).
 
-Es wird nur das 1. Wifi-Interface (radio0) konfiguriert - idR 2.4 Ghz.
+Falls ein 2. Wifi-Device vorhanden ist (radio1) wird ist als 5 Ghz Wifi für den Kanal 36 konfiguriert.
 
 Falls eine eindeutige lede default Konfiguration auf einem deaktivierten WLAN erstellt ist, so wird die Konfiguration gelöscht.
 
