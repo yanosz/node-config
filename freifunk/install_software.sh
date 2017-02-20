@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PKGS="ip openvpn-polarssl babeld fastd ebtables kmod-ebtables-ipv4 owipcalc batctl haveged kmod-nf-nathelper-extra kmod-pptp ppp-mod-pptp"
+PKGS="ip-full openvpn-mbedtls  babeld fastd owipcalc batctl haveged kmod-nf-nathelper-extra kmod-pptp ppp-mod-pptp  ebtables kmod-ebtables-ipv4"
 
 echo "Installing: $PKGS"
 opkg update

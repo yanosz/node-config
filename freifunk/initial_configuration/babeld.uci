@@ -32,10 +32,13 @@ config filter
 # Ad-Hoc interface
 config interface
 	option ifname 'wlan0'
-	option wired 'false'
+	option type 'wireless'
 
+config interface
+        option ifname 'wlan1'
+        option type 'wireless'
 
 # fastd - Roaming (Peering) ueber WAN oder andere Netze
 config interface
-	option ifname 'tap-fastd'
-	option wired 'true'
+	option ifname 'tap-icvpn'
+	option type 'tunnel'

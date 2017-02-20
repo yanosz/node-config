@@ -30,7 +30,7 @@ config interface 'freifunk'
 # Auf dem Interface ist die IPv4 Adresse des Nodes konfiguriert - 
 # jedoch ohne entspr. Fuer IPv6 wird einfach die Link Local Adresse verwendet
 config interface 'fastd' 
-	option ifname 'tap-fastd'
+	option ifname 'tap-icvpn'
 	option proto 'static'
 	option ipaddr '10.159.64.1'
 	option netmask '255.255.255.255'
@@ -46,15 +46,6 @@ config interface 'vpn'
 	option ip4table '66'
 	option ip6table '66'
 
-# Einige VPN-Tunnel (z.B. Freifunk Berlin) verwendet routed Adressen
-# Das Interface liegt somit in der Freifunk-Zone es findet kein Masquerading statt
-config interface 'vpn_routed'
-	option proto 'none'
-	option ifname 'vpn'
-	option ip4table '66'
-	option ip6table '66'
-
-
 # Falls der VPN-Provider IPv6 Prefix-Delegation unterstuetzt
 # Wird ein entspr. Prefix abgerufen. Gleichzeit wird Policy-Routing
 # Fuer die entspr. Adressen definiert
@@ -63,18 +54,13 @@ config interface 'vpn6'
 	option ifname 'vpn-nat'
 	option ip6table '66'
 
-config interface 'vpn6_routed'
-	option proto 'dhcpv6'
-	option ifname 'vpn'
-	option ip6table '66'
-
 # VPN - falls PPTP verwendet wird
 # Server sind bspw.
 # - omni.freifunk-koeln.de
 # - yagi.freifunk-koeln.de
 # Accounts: E-Mail an vpn@freifunk-koeln.de
 config interface 'vpn_pptp'
-        option enabled '0'
+        option disabled '1'
         option proto 'pptp'
         option server 'omni.freifunk-koeln.de'
         option username 'user'
@@ -83,12 +69,10 @@ config interface 'vpn_pptp'
         option ip6table '66'
 
 config interface 'vpn_pptp6'
-        option enabled '0'
+        option disabled '1'
         option proto 'dhcpv6'
         option ifname 'pptp-vpn_pptp'
         option ip6table '66'
-
-
 
 # Batman-adv Interface. Definiert, dass batman-adv fuer das mesh
 # Verwendet wird
@@ -103,16 +87,13 @@ config interface 'mesh5'
         option mtu '1532'
         option mesh 'bat0'
 
-
-# Lokaler Supernode - Kompatibel zu gluon
-# Die MTU muss ggf. angepasst werden
-config interface 'supernode'
+# Supernode-Interface - tap-Variante
+config interface 'mesh_supernode'           
+        option proto 'batadv'         
+        option mtu '1532'                          
+        option mesh 'bat0'
 	option ifname 'tap-supernode'
-        option enabled '0'
-	option proto 'batadv'
-	option mtu '1312'
-	option mesh 'bat0'
-	
+
 # Route in der Freifunk-Tabelle: Konfigurierten Range auf Interface routen
 config route 'route4_node_subnet'
 	option interface 'freifunk'
@@ -127,8 +108,6 @@ config route6 'route_6_node_subnet'
 	option target 'fdd3:5d16:b5dd:f064::/64'
 	option table '66'
 
-
-# Addresse: Routing über ipv4
 config interface 'babel_mesh'           
         option proto 'static'           
         option ipaddr '10.159.64.1'     
@@ -136,92 +115,31 @@ config interface 'babel_mesh'
         option ip4table '66'
         option ip6table '66'
 
-config rule 'rule_freifunk_in'
-    option in     'freifunk'
+config interface 'babel_mesh5'                                                          
+        option proto 'static'                                                          
+        option ipaddr '10.159.64.1'                                                    
+        option netmask '255.255.255.255'                                               
+        option ip4table '66'                                                           
+        option ip6table '66' 
+
+
+config rule 'rule4_freifunk_out'
+    	option out     'freifunk'
 	option lookup '66'
 	option priority '66'
 
-config rule 'rule_freifunk_out'
-    option out     'freifunk'
-	option lookup '66'
-	option priority '66'
-
-config rule 'rule_iacvpn_in'
-    option in     'fastd'
-	option lookup '66'
-	option priority '66'
-
-config rule 'rule_iacvpn_out'
-    option out    'fastd'
-	option lookup '66'
-	option priority '66'
-
-config rule 'rule_vpn_in'
-    option in 'vpn'
-    option lookup '66'
-	option priority '66'
-
-config rule 'rule_vpn_out'
-    option out 'vpn'
-    option lookup '66'
-	option priority '66'
-
-config rule 'rule_vpn_routed_in'
-    option in 'vpn_routed'
-    option lookup '66'
-	option priority '66'
-
-config rule 'rule_vpn_routed_out'
-    option out 'vpn_routed'
-    option lookup '66'
-	option priority '66'
-
-# Hack: Durch 
-# option ip4table '66' 
-# bei der Network-Definition von babel_mesh wird eine rule mit priority > 80000 erzeugt
-# Die Rule muss aber < main sein, d.h. prioritaet 66 haben
-config rule 'rule_node_ip_high_prio'
-    option src '10.159.64.1/32'
-    option lookup '66'
-    option priority '66'
-
-config rule6 'rule6_freifunk_in'
-    option in     'freifunk'
-	option lookup '66'
-	option priority '66'
-
-config rule6 'rule6_freifunk_out'
-    option out     'freifunk'
-	option lookup '66'
-	option priority '66'
-
-config rule6 'rule6_iacvpn_in'
-    option in     'fastd'
-	option lookup '66'
-	option priority '66'
-
-config rule6 'rule6_iacvpn_out'
-    option out    'fastd'
-	option lookup '66'
-	option priority '66'
-
-# Traffic aus dem babel-mesh nutzt auch tabelle 66
-config rule 'rule_babel_in'         
-        option in 'babel_mesh'      
-        option lookup '66'          
-        option priority '66'        
-                                    
-config rule 'rule_babel_out'        
-        option out 'babel_mesh'     
-        option lookup '66'          
+config rule6 'rule6_freifunk_out'                  
+        option out     'freifunk'                  
+	option lookup '66'                        
         option priority '66' 
 
-config rule6 'rule6_babel_in'         
-        option in 'babel_mesh'      
-        option lookup '66'          
-        option priority '66'        
-                                    
-config rule6 'rule6_babel_out'        
-        option out 'babel_mesh'     
-        option lookup '66'          
-        option priority '66'
+config rule 'rule4_freifunk_in'                                                       
+        option in     'freifunk'                                                      
+        option lookup '66'                                                             
+        option priority '66'                                                           
+                                                                                       
+config rule6 'rule6_freifunk_in'                                                      
+        option in     'freifunk'                                                      
+        option lookup '66'                                                             
+        option priority '66'  
+

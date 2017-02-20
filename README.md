@@ -3,11 +3,10 @@ Worum geht's?
 Dieses Projekt enthält einige Konfigurationsdateien, die beispielhaft für einen Freifunk-Node verwendet werden können.
 Du kannst die Konfiguration auf Deinen Node kopieren, anpassen und anwenden.
 
-Voraussetzung ist OpenWRT 15.05.1 (Chaos Calmer) mit ausreichend Speicherplatz. Der Node muss mit dem Internet (WAN-Port) und einem PC / Notebook (LAN-Port) verbunden werden.
+Voraussetzung ist LEDE 17.01 mit ausreichend Speicherplatz. Der Node muss mit dem Internet (WAN-Port) und einem PC / Notebook (LAN-Port) verbunden werden.
+Die alte OpenWRT Konfiguration findet sich im Branch `openwrt`. Die
 
-Auf dem Node wird die Wifi-Konfiguration geändert - damit ist die Installation über Wifi (wlan) nicht möglich. 
-
-In der Anleitung gehe ich davon aus, dass Du mit der Konsole aus Linux (Mac OS, Unix, usw.) vertraut bist, git installiert ist und Du Dich per `ssh` mit dem OpenWRT-Router verbinden kannst. Evtl. musst Du noch Software installieren - auf Windows z.B. cygwin mit bash, git und ssh.
+In der Anleitung gehe ich davon aus, dass Du mit der Konsole aus Linux (Mac OS, Unix, usw.) vertraut bist, git installiert ist und Du Dich per `ssh` mit dem lede-Router verbinden kannst. Evtl. musst Du noch Software installieren - auf Windows z.B. cygwin mit bash, git und ssh.
 
 Schnellstart-Anleitung
 ------------------------
@@ -26,7 +25,8 @@ Führe folgende Befehle auf Deinem PC oder Laptop aus:
 
 Bekannte Probleme
 -----------------------
-1. Die DHCPv6-Prefix delegation im ad-hoc Netz ist ungetestet und wahrscheinlich kaputt
+1. Die Installation des ebtables-Pakets schlägt fehl, da Module bereits geladen werden. Der Fehler kann ignogiert werden. 
+2. Die DHCPv6-Prefix delegation im ad-hoc Netz ist ungetestet und wahrscheinlich kaputt
 
 
 Internet freigeben?
@@ -40,18 +40,17 @@ Wenn Du  Dein eigenes Internet ohne VPN freigeben willst, dann musst Du das ents
 
 Wenig Speicherplatz?
 ----------------------
-Wenn Dein Node lediglich 4 MB Flash hat (z.B. TP-Link WR841n), dann musst Du ein OpenWRT-Image erstellen, in dem keine WebGUI enthalten ist - zum Beispiel:
+Wenn Dein Node lediglich 4 MB Flash hat (z.B. TP-Link WR841n), dann musst Du ein LEDE-Image erstellen, in dem keine WebGUI enthalten ist - zum Beispiel:
 ```bash
-wget https://downloads.openwrt.org/chaos_calmer/15.05.1/ar71xx/generic/OpenWrt-ImageBuilder-15.05.1-ar71xx-generic.Linux-x86_64.tar.bz2
-tar xjf OpenWrt-ImageBuilder-15.05.1-ar71xx-generic.Linux-x86_64.tar.bz2
-cd OpenWrt-ImageBuilder-15.05.1-ar71xx-generic.Linux-x86_64
-echo "src/gz yanosz_chaos_calmer_base https://openwrt.yanosz.net/ar71xx/packages/base" >> repositories.conf
-make image PROFILE="TLWR841" PACKAGES="ip openvpn-polarssl babeld fastd ebtables kmod-ebtables-ipv4 owipcalc batctl haveged"
+wget https://downloads.lede-project.org/releases/17.01.0-rc2/targets/ar71xx/generic/lede-imagebuilder-17.01.0-rc2-ar71xx-generic.Linux-x86_64.tar.xz
+tar xf lede-imagebuilder-17.01.0-rc2-ar71xx-generic.Linux-x86_64.tar.xz
+cd lede-imagebuilder-17.01.0-rc2-ar71xx-generic.Linux-x86_64
+make image PROFILE="TLWR841" PACKAGES="ip openvpn-mbedtls  babeld fastd owipcalc batctl haveged kmod-nf-nathelper-extra kmod-pptp ppp-mod-pptp  ebtables kmod-ebtables-ipv4"
 ```
 
 Um den PPTP-VPN-Client nutzen zu können, musst Du auf openssl verzichten. Ersetze dazu den letzten Befehl:
 ```bash
-make image PROFILE="TLWR841" PACKAGES="ip babeld fastd ebtables kmod-ebtables-ipv4 owipcalc batctl haveged kmod-nf-nathelper-extra kmod-pptp ppp-mod-pptp"
+make image PROFILE="TLWR841" PACKAGES="ip babeld fastd owipcalc batctl haveged kmod-nf-nathelper-extra kmod-pptp ppp-mod-pptp  ebtables kmod-ebtables-ipv4 kmod-nf-nathelper-extra kmod-pptp ppp-mod-pptp"
 ```
 
 
@@ -61,18 +60,14 @@ Wenn Du den Node als Supernode für ein Gluon-basiertes Netz nutzen willst, muss
 Verbinde Dich hierzu per SSH zu Deinem Node und führe die folgenden Befehle aus:
 
 ```bash
-uci set fastd.kbu_supernode.enabled=1
-uci set network.supernode.enabled=1
+uci set fastd.supernode.enabled=1
 uci commit
 /etc/init.d/fastd restart
-/etc/init.d/network restart
 /etc/init.d/fastd show_key kbu_supernode
 ```
 Als fastd-Peer in gluon muss die LAN-Adresse Deines Nodes (z.B. `192.168.1.1`) und der fastd Public-Key eintragen werden. Überprüfe, dass der fastd-Peer der einzige konfigurierte Peer ist, damit Du nicht beide Kollisionsdomänen verbindest.
 
 Der letzte Befehl zeigt den fastd Public-Key. Nun kannst Du die WAN-Ports der Gluon-Router (blauer Port) mit den LAN-Ports des Routers (gelbe Ports) verbinden. 
-
-In den [Feeds](https://openwrt.yanosz.net/openwrt-15.05.1/) sind Gluon-Pakete wie bspw. `kmod-batman-adv-legacy` enthalten, die bei Bedarf installiert werden können.
 
 Die Details
 -----------------------
@@ -82,8 +77,6 @@ Shell-Scripts installieren die Konfiguration auf dem Node. Es gibt:
 * [freifunk/import_configuration.sh](freifunk/import_configuration.sh) - Importiert die Konfiguration
 * [freifunk/set_ip.sh](freifunk/set_ip.sh) - Setzt IP-Adressen und Subnets des Nodes in der kompletten Konfiguration
 * [freifunk/install.sh](freifunk/install.sh) - Ruft die anderen Scripts in der richtigen Reihenfolge auf
-* [freifunk/import_feeds.sh](freifunk/import_feeds.sh) - Importiert feeds von https://openwrt.yanosz.net für batman-adv, gluon-Pakete. [signing key](/freifunk/keys) - Siehe auch: https://dev.openwrt.org/ticket/22930 
-
 
 #### Konfiguration
 Die Konfiguration sind .uci-Dateien die importiert werden - ausgenommen ebtables und wireless: Die UCI-Einstellungen werden dynamisch per Shellscript generiert. Ich geb' hier nur eine grobe Übersicht über die enthaltene Konfiguration. **Alle Dateien sind ausführlich kommentiert. Details findest in den Files selbst**. 
@@ -97,11 +90,12 @@ batman-adv wird zum Roaming innerhalb des Meshes verwendet. Jeder Node ist Gatew
 ##### dhcp / radvd - [freifunk/initial_configuration/dhcp.uci](freifunk/initial_configuration/dhcp.uci)
 Für Clients am Accesspoint wird ein IPv4-DHCP-Server und ein radvd definiert. Es werden private bzw. ULA-Adressen verwendet. Falls Public IPv6-Adressen zur Verfügung stehen werden sie auch verwendet. Die Konfiguration ist ein Shell-Script, da `/etc/firewall.user` nicht per UCI verwaltet wird.
 
-##### Multicast-Filter - [freifunk/initial_configuration/ebtables.sh](freifunk/initial_configuration/ebtables.sh)
+##### Multicast-Filter - [freifunk/initial_configuration/firewall.sh](freifunk/initial_configuration/firewall.sh)
 Multicast / Anycast im batman-adv Mesh wird stark eingeschränkt, da das mesh nur zum Roaming verwendet wird.
+Ebenso werden hier ip-rules gesetzt.
 
 ##### fastd - [freifunk/initial_configuration/fastd.uci](freifunk/initial_configuration/fastd.uci)
-Per fastd wird eine Verbindung zu anderen Nodes aufgebaut, zu denen kein Funkkontakt besteht. Testweise ist ein Node mit Zugang zum ICVPN hinterlegt. Zum Routing wird babeld verwendet.
+Per fastd wird eine Verbindung zu anderen Nodes aufgebaut, zu denen kein Funkkontakt besteht. Testweise ist ein Node mit Zugang zum ICVPN hinterlegt. Zum Routing wird babeld verwendet. Mit [freifunk/initial_configuration/fastd_binding.sh](freifunk/initial_configuration/fastd_binding.sh) werden die bindings für LAN und WAN entsprechend der Interface-Namen gesetzt.
 
 Eine weitere fastd-Instanz zum Betrieb eines lokalen Supernodes in Gluon-Netzen ist vorhanden, aber deaktivert.
 
@@ -140,6 +134,5 @@ Definiert 2 Wifi-Netze (ad-hoc + AP).
 
 Es wird nur das 1. Wifi-Interface (radio0) konfiguriert - idR 2.4 Ghz.
 
-**Achtung:** Bei Anwendung wird ein vorhandenes OpenWRT Wifi gelöscht, da sonst ein unverschlüsselter Accesspoint für das LAN-Netz erstellt werden könnte.
-
+Falls eine eindeutige lede default Konfiguration auf einem deaktivierten WLAN erstellt ist, so wird die Konfiguration gelöscht.
 

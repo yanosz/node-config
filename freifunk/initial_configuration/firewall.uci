@@ -45,7 +45,7 @@ config zone
 	option output 'ACCEPT'
 	option input 'REJECT'
 	option name 'freifunk'
-	option network 'bat0 fastd freifunk mesh vpn_routed'
+	option network 'freifunk babel_mesh babel_mesh5 fastd'
 	option mtu_fix '1'
 
 # In der Zone Freifunk, sind die folgenden Dienste / eingehenden Pakete erlaubt:
