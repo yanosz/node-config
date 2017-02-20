@@ -63,7 +63,7 @@ Verbinde Dich hierzu per SSH zu Deinem Node und führe die folgenden Befehle aus
 uci set fastd.supernode.enabled=1
 uci commit
 /etc/init.d/fastd restart
-/etc/init.d/fastd show_key kbu_supernode
+/etc/init.d/fastd show_key supernode
 ```
 Als fastd-Peer in gluon muss die LAN-Adresse Deines Nodes (z.B. `192.168.1.1`) und der fastd Public-Key eintragen werden. Überprüfe, dass der fastd-Peer der einzige konfigurierte Peer ist, damit Du nicht beide Kollisionsdomänen verbindest.
 
