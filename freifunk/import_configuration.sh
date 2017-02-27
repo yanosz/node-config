@@ -12,7 +12,7 @@ touch /lib/freifunk/config_import_done
 # Die Konfiguration kann nicht einfach per uci merged werden und wird per Script aufgenommen
 /lib/freifunk/initial_configuration/firewall.sh
 /lib/freifunk/initial_configuration/wireless.sh
-
+/lib/freifunk/initial_configuration/rules.sh
 
 ## Weitere Konfigurationen werden via uci import eingelesen und aufgenommen:
 # firewall, dhcp, network und wireless ergänzen die vorhandene Konfiguration (-m)
