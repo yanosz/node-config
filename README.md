@@ -42,9 +42,9 @@ Wenig Speicherplatz?
 ----------------------
 Wenn Dein Node lediglich 4 MB Flash hat (z.B. TP-Link WR841n), dann musst Du ein LEDE-Image erstellen, in dem keine WebGUI enthalten ist - zum Beispiel:
 ```bash
-wget https://downloads.lede-project.org/releases/17.01.0-rc2/targets/ar71xx/generic/lede-imagebuilder-17.01.0-rc2-ar71xx-generic.Linux-x86_64.tar.xz
-tar xf lede-imagebuilder-17.01.0-rc2-ar71xx-generic.Linux-x86_64.tar.xz
-cd lede-imagebuilder-17.01.0-rc2-ar71xx-generic.Linux-x86_64
+wget http://downloads.lede-project.org/releases/17.01.3/targets/ar71xx/generic/lede-imagebuilder-17.01.3-ar71xx-generic.Linux-x86_64.tar.xz
+tar xf lede-imagebuilder-17.01.3-ar71xx-generic.Linux-x86_64.tar.xz
+cd lede-imagebuilder-17.01.3-ar71xx-generic.Linux-x86_64
 make image PROFILE="TLWR841" PACKAGES="ip openvpn-mbedtls  babeld fastd owipcalc batctl haveged kmod-nf-nathelper-extra kmod-pptp ppp-mod-pptp  ebtables kmod-ebtables-ipv4"
 ```
 
