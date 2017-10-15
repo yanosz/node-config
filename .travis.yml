@@ -7,6 +7,7 @@ deploy:
   skip_cleanup: true
   api_key:
     secure: joR5XtwbQOwsDMhQj/5Wpb/6QUT4KjTCf/dqOYMCzVFvqZhJA28Bnj8M8LQQk6WtQhZanWmLD/Z/3o9Xa+8V9qclV1M0rlsmEPs5WuYLhCJ0xgfoIxDEYaSYDgY/RaCyVB7Z1Jx5KFFTXXxuPqgRxbRicYl9K3tY2i9PUsKWytiPsrzMF2gV0PzQbA0h0tIS0rH6cWEjVFaIu103oOz6AlpYnvOp/oQrdTpoHfjVW6E77hiZ2PZpaym1E0RO3xNJxPkX6KSpKAteMcoifoW7S7rSFnN3DmenGPxSEeJFdP73NspSCt9TbelUnkeOtsImS6xhs1YRkNqoCIOBygkSQupOTETKnTkfVhrp6+YmZWiaSU7mycqxj5v7BB+YzeocUKLW5xS1MP1hNV0UXG60NtNUnqaf2rRyW4KbCpEgVVUNdH5ahLMTTzxdjmKRzlA8TVUnct60YnAJAqrDMwDP6c8MlsSRXqXYRKuhsoIoFSeHEA2zccNqOxrb5DciNWeKfZ875hDz2dra62t4X+A0ezyP2chkVQxi15KMMOcjculKhHqwLJ++azZdllEurIneSEYjGPu3pqWOYJMaH4V6xLDKcBvAMc8QmjebZ16ahVdZ2Dg0o3B20todAGBS7PH8ObBq9oFA0hjEp4kkadkAwNO0C6XnEgv+On1Cugq+n3k=
-  file: target/bin/packages/all/nodeconfig/*.ipk
+  file_glob: true
+  file: target/bin/packages/all/nodeconfig/*
   on:
     tags: true
