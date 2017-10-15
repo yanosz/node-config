@@ -13,6 +13,7 @@ define Package/node-config
 	SECTION:=freifunk
 	CATEGORY:=Freifunk
 	TITLE:=Node Config Scripts
+	DEPENDS:=+ip-full +babeld +fastd +owipcalc +batctl +haveged
 endef
 
 # Package description; a more verbose description on what our package does
@@ -33,10 +34,40 @@ define Build/Compile/Default
 endef
 Build/Compile = $(Build/Compile/Default)
 
-# Package install instructions; create a directory inside the package to hold our executable, and then copy the executable we built previously into the folder
 define Package/node-config/install
 	$(CP) $(PKG_BUILD_DIR)/freifunk $(1)/lib
 endef
 
-# This command is always the last, it uses the definitions and variables we give above in order to get the job done
+define Package/node-config-openvpn
+	$(call Package/node-config)
+	TITLE:=Node Config Scripts - OpenVPN additions
+	DEPENDS:=+openvpn-mbedtls +node-config
+endef
+
+define Package/node-config-openvpn/description
+	OpenVPN-Additions DIY Freifunk-Router - see https://github.com/yanosz/node-config for details.
+endef
+
+define Package/node-config-pptp
+	$(call Package/node-config)
+	TITLE:=Node Config Scripts - PPtP additions
+	DEPENDS:=+kmod-nf-nathelper-extra +kmod-pptp +ppp-mod-pptp +node-config
+endef
+
+define Package/node-config-pptp/description
+	PPtP additions DIY Freifunk-Router - see https://github.com/yanosz/node-config for details.
+endef
+
+define Package/node-config-pptp/install
+	@echo "Nothing to be done"
+
+endef
+
+define Package/node-config-openvpn/install
+	@echo "Nothing to be done"
+endef
+
+
 $(eval $(call BuildPackage,node-config))
+$(eval $(call BuildPackage,node-config-pptp))
+$(eval $(call BuildPackage,node-config-openvpn))
