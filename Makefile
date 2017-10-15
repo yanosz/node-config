@@ -10,8 +10,10 @@ ifndef PKG_RELEASE
   PKG_RELEASE:=1
 endif
 
-ifndef BUILD_KEY
-  BUILD_KEY:=/tmp/lede.sec
+ifdef BUILD_KEY
+  SIGN_STR:="BUILD_KEY=$(BUILD_KEY)"
+else
+  SIGN_STR:="CONFIG_SIGNED_PACKAGES="
 endif
 
 world: target/bin/packages/all/nodeconfig/Packages.sig
@@ -33,7 +35,7 @@ target/.config: target
 
 target/bin/packages/all/nodeconfig/Packages.sig: target/.config
 	$(MAKE) -C target package/node-config/compile CONFIG_TARGET_ARCH_PACKAGES=all
-	$(MAKE) -C target package/index CONFIG_TARGET_ARCH_PACKAGES=all BUILD_KEY=$(BUILD_KEY)
+	$(MAKE) -C target package/index CONFIG_TARGET_ARCH_PACKAGES=all $(SIGN_STR)
 	$(RM) -rf target/bin/packages/all/base/
 
 
