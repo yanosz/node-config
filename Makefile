@@ -1,5 +1,5 @@
 ifndef LEDE_MIRROR
-  LEDE_MIRROR:=http://downloads.lede-project.org/releases/
+  LEDE_MIRROR:=https://downloads.lede-project.org/releases/
 endif
 
 ifndef LEDE_SDK
