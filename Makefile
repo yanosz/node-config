@@ -45,7 +45,8 @@ target/.config: target
 	$(MAKE) -C target defconfig
 
 target/bin/packages/all/nodeconfig/Packages: target/.config
-	$(MAKE) -C target package/node-config/compile CONFIG_TARGET_ARCH_PACKAGES=all
+	@echo Version: $(PKG_VERSION)
+	$(MAKE) -C target package/node-config/compile CONFIG_TARGET_ARCH_PACKAGES=all PKG_VERSION=$(PKG_VERSION)
 	$(MAKE) -C target package/index CONFIG_TARGET_ARCH_PACKAGES=all $(SIGN_STR)
 	$(RM) -rf target/bin/packages/all/base/
 
