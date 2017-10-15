@@ -1,4 +1,4 @@
-install: make
+script: make
 cache:
   directories:
     - tmp      
