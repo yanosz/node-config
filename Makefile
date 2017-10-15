@@ -9,6 +9,10 @@ endif
 SDK_FILE:= $(notdir $(LEDE_SDK))
 SDK_URL:= $(LEDE_MIRROR)/$(LEDE_SDK)
 
+ifdef TRAVIS_TAG
+  PKG_VERSION:=$(TRAVIS_TAG)
+endif
+
 ifndef PKG_VERSION
   PKG_VERSION:=1.0
 endif
