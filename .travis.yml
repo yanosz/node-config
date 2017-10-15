@@ -2,3 +2,10 @@ script: make
 cache:
   directories:
     - tmp      
+deploy:
+  provider: releases
+  api_key: "GITHUB OAUTH TOKEN"
+  file: "target/bin/packages/all/nodeconfig/*"
+  skip_cleanup: true
+  on:
+    tags: true
