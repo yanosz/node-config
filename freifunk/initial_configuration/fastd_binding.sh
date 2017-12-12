@@ -1,7 +1,7 @@
 #!/bin/sh
 
-wan_if=$(uci get network.wan.ifname)
-lan_if=$(uci get network.lan.ifname)
+wan_if=$(uci get network.wan.ifname 2> /dev/null) # Ignore errors => No interface anyway
+lan_if=$(uci get network.lan.ifname 2> /dev/null) # Ignore errors => No interface anyway
 
 # Make sure, that fastd is using only lan and wan interfaces to avoid tunnel-in-tunnel situations
 if [ $wan_if ];then
