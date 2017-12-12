@@ -13,6 +13,7 @@ config interface 'bat0'
 # via ip6assign und ip6class wird erreicht, dass der konfigurierte
 # ULA range fuer router advertisments zur Verfuegung steht
 config interface 'freifunk'
+    option enabled '0'
 	option ifname 'bat0'
 	option type 'bridge'
 	option auto '1'
@@ -30,6 +31,7 @@ config interface 'freifunk'
 # Auf dem Interface ist die IPv4 Adresse des Nodes konfiguriert - 
 # jedoch ohne entspr. Fuer IPv6 wird einfach die Link Local Adresse verwendet
 config interface 'fastd' 
+    option enabled '0'
 	option ifname 'tap-icvpn'
 	option proto 'static'
 	option ipaddr '10.159.64.1'
@@ -60,7 +62,7 @@ config interface 'vpn6'
 # - yagi.freifunk-koeln.de
 # Accounts: E-Mail an vpn@freifunk-koeln.de
 config interface 'vpn_pptp'
-        option disabled '1'
+        option enabled '0'
         option proto 'pptp'
         option server 'omni.freifunk-koeln.de'
         option username 'user'
@@ -69,9 +71,8 @@ config interface 'vpn_pptp'
         option ip6table '66'
 
 config interface 'vpn_pptp6'
-        option disabled '1'
         option proto 'dhcpv6'
-        option ifname 'pptp-vpn_pptp'
+        option ifname '@vpn_pptp'
         option ip6table '66'
 
 # Batman-adv Interface. Definiert, dass batman-adv fuer das mesh
@@ -108,15 +109,17 @@ config route6 'route_6_node_subnet'
 	option target 'fdd3:5d16:b5dd:f064::/64'
 	option table '66'
 
-config interface 'babel_mesh'           
-        option proto 'static'           
+config interface 'babel_mesh'
+        option enabled '0'
+        option proto 'static'
         option ipaddr '10.159.64.1'     
         option netmask '255.255.255.255'
         option ip4table '66'
         option ip6table '66'
 
 config interface 'babel_mesh5'                                                          
-        option proto 'static'                                                          
+        option enabled '0'
+        option proto 'static'
         option ipaddr '10.159.64.1'                                                    
         option netmask '255.255.255.255'                                               
         option ip4table '66'                                                           
@@ -124,7 +127,7 @@ config interface 'babel_mesh5'
 
 
 config rule 'rule4_freifunk_out'
-    	option out     'freifunk'
+   	option out     'freifunk'
 	option lookup '66'
 	option priority '66'
 

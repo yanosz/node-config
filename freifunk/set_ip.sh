@@ -22,9 +22,15 @@ uci -q batch <<EOF
 	set network.babel_mesh.ipaddr='$ipv4_addr'
 	set network.babel_mesh5.ipaddr='$ipv4_addr'
 
-        set network.freifunk.ip6prefix='$ipv6_network'
+    set network.freifunk.ip6prefix='$ipv6_network'
 	set network.route_6_node_subnet.target='$ipv6_network'
 	set network.rule_node_ip_high_prio.src='$ipv4_addr/32'
+
+	set network.freifunk.enabled='1'
+	set network.fastd.enabled='1'
+	set network.babel_mesh.enabled='1'
+	set network.babel_mesh5.enabled='1'
+
 	commit network
 EOF
 

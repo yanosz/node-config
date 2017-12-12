@@ -45,7 +45,10 @@ config zone
 	option output 'ACCEPT'
 	option input 'REJECT'
 	option name 'freifunk'
-	option network 'freifunk babel_mesh babel_mesh5 fastd'
+	list network 'freifunk'
+	list network 'babel_mesh'
+	list network 'babel_mesh5'
+	list network 'fastd'
 	option mtu_fix '1'
 
 # In der Zone Freifunk, sind die folgenden Dienste / eingehenden Pakete erlaubt:
