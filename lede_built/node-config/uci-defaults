@@ -1,0 +1,6 @@
+#!/bin/sh
+# Importing configuration, only:
+# - Software installation is done by dependencies
+# - IP-Configuration nees interaction
+/lib/freifunk/import_configuration.sh
+exit 0
