@@ -25,7 +25,7 @@ endef
 # The last command is necessary to ensure our preparation instructions remain compatible with the patching system.
 define Build/Prepare
 	mkdir -p $(PKG_BUILD_DIR)
-	$(CP) $(PWD)/../freifunk $(PKG_BUILD_DIR)
+	$(CP) ../../freifunk $(PKG_BUILD_DIR)
 	cp Makefile $(PKG_BUILD_DIR)
 	cp uci-defaults $(PKG_BUILD_DIR)
 endef
