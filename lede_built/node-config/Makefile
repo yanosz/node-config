@@ -13,7 +13,7 @@ define Package/node-config
 	SECTION:=freifunk
 	CATEGORY:=Freifunk
 	TITLE:=Node Config Scripts
-	DEPENDS:=+ip-full +babeld +fastd +owipcalc +batctl +haveged
+	DEPENDS:=+ip +babeld +fastd +owipcalc +batctl +haveged
 endef
 
 # Package description; a more verbose description on what our package does
