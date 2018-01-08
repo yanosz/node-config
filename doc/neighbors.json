@@ -1,0 +1,18 @@
+{
+  "neighbours": {
+    "batadv": {
+      "aa:4b:8b:51:2b:0f": {
+        "neighbours": {
+          "02:ab:ff:a5:1d:03": {
+            "tq": 255,
+            "lastseen": 4.290
+          }
+        }
+      }
+    },
+    "wifi": {
+      "aa:4b:8b:51:2b:0a": {}
+    },
+    "node_id": "10feedbad4b4"
+  }
+}

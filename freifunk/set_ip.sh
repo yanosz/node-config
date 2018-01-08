@@ -12,11 +12,13 @@ read ipv6_network
 
 #Basis-Adressen fuer die entspr. Routes ausrechnen
 ipv4_network=$(owipcalc $ipv4_addr/24 network)
+ipv6_addr=$(owipcalc $ipv6_network add 1 prefix 128)
 
 
 # Konfiguration setzen
 uci -q batch <<EOF
 	set network.freifunk.ipaddr='$ipv4_addr'
+	set network.freifunk.ip6addr='$ipv6_addr'
 	set network.route4_node_subnet.target='$ipv4_network'
 	set network.fastd.ipaddr='$ipv4_addr'
 	set network.babel_mesh.ipaddr='$ipv4_addr'

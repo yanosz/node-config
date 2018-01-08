@@ -1,0 +1,68 @@
+{
+  "statistics": {
+    "clients": {
+      "total": 0,
+      "wifi": 0,
+      "wifi24": 0,
+      "wifi5": 0
+    },
+    "traffic": {
+      "rx": {
+        "packets": 22586,
+        "bytes": 1672399
+      },
+      "tx": {
+        "packets": 155,
+        "bytes": 19174,
+        "dropped": 30
+      },
+      "forward": {
+        "packets": 0,
+        "bytes": 0
+      },
+      "mgmt_rx": {
+        "packets": 13347,
+        "bytes": 1795738
+      },
+      "mgmt_tx": {
+        "packets": 17313,
+        "bytes": 4658270
+      }
+    },
+    "gateway": "02:ab:ff:a5:1d:03",
+    "gateway_nexthop": "02:ab:ff:a5:1d:03",
+    "mesh_vpn": {
+      "groups": {
+        "backbone": {
+          "peers": {
+            "peer2": null,
+            "peer3": {
+              "established": 599.016
+            },
+            "peer8": null,
+            "peer1": null,
+            "peer6": null,
+            "peer5": null,
+            "peer7": null,
+            "peer4": null
+          }
+        }
+      }
+    },
+    "node_id": "10feedbad4b4",
+    "rootfs_usage": 0.0901,
+    "memory": {
+      "total": 28244,
+      "free": 5804,
+      "buffers": 992,
+      "cached": 1444
+    },
+    "uptime": 639.21,
+    "idletime": 473.05,
+    "loadavg": 2.25,
+    "processes": {
+      "running": 3,
+      "total": 45
+    }
+  }
+}

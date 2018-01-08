@@ -1,0 +1,62 @@
+{
+  "nodeinfo": {
+    "software": {
+      "autoupdater": {
+        "branch": "stable",
+        "enabled": true
+      },
+      "batman-adv": {
+        "version": "2015.1",
+        "compat": 15
+      },
+      "fastd": {
+        "version": "v17",
+        "enabled": false
+      },
+      "firmware": {
+        "base": "gluon-v2016.1.5-8-gdeac14e",
+        "release": "20160615"
+      },
+      "status-page": {
+        "api": 1
+      }
+    },
+    "network": {
+      "addresses": [
+        "fda0:cab1:e1e5:5116:eade:27ff:fe65:a5af",
+        "fe80::eade:27ff:fe65:a5af",
+        "2a03:2260:3011:1160:eade:27ff:fe65:a5af"
+      ],
+      "mesh": {
+        "bat0": {
+          "interfaces": {
+            "wireless": [
+              "ea:e3:29:65:a5:af",
+              "ea:e3:28:65:a5:af"
+            ],
+            "other": [
+              "ea:df:27:65:a5:af"
+            ]
+          }
+        }
+      },
+      "mac": "e8:de:27:65:a5:af"
+    },
+    "location": {
+      "latitude": 51.10727924,
+      "longitude": 7.00933367
+    },
+    "owner": {
+      "contact": "me@petabyteboy.de"
+    },
+    "system": {
+      "site_code": "lln"
+    },
+    "node_id": "e8de2765a5af",
+    "hostname": "PetaByteBoy",
+    "hardware": {
+      "model": "TP-Link TL-WDR3600 v1",
+      "nproc": 1
+    }
+  }
+}

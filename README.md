@@ -33,18 +33,39 @@ Internet freigeben?
 ------------------------
 Du kannst das Internet entweder über einen VPN-Tunnel oder direkt freigeben:
 
-Für einen VPN-Tunnel (z.B. via mullvad) musst Du die entsprechende Anbieter-Konfiguration in `/lib/freifunk/vpn` auf dem Node hinterlegen und in `/etc/config/openvpn` referenzieren.
+#### OpenVPN-Tunnel 
 
-Wenn Du  Dein eigenes Internet ohne VPN freigeben willst, dann musst Du das entsprechende Forwarding in `/etc/config/firewall` aktivieren und in `/etc/config/network` IPv6-Range Zuweisungen aus `wan6` auf dem Freifunk-Interface erlauben. 
-*Hinweis: Du solltest Dein Internet nur dann freigeben, wenn Du Erfahrung im Abuse-Handling hast.* ToDo: IPv4.
+Für einen VPN-Tunnel (z.B. via mullvad) musst Du die entsprechende Anbieter-Konfiguration in `/lib/freifunk/vpn` 
+auf dem Node hinterlegen und in [`/etc/config/openvpn`](freifunk/initial_configuration/openvpn.uci) aktivieren. 
+
+Falls Du einen anderen OpenVPN-Provider nutzen willst, kannst Du Dich an der existierenden Konfiguration orientieren.
+Vergiss nicht, die Routes in die Freifunk Routing-Tabelle zu schreiben. Setze hierzu die Optionen: `route-nopull`, `script-security 2` und `up /lib/freifunk/vpn/up.sh` ([Beispiel](freifunk/vpn/yanosz/client.conf)).
+
+#### Eigenes Internet direkt freigeben
+
+Wenn Du  Dein eigenes Internet ohne VPN freigeben willst, geh' wie folgt vor:
+```bash
+uci set network.internet_share.enabled=1
+uci set network.internet_share6.enabled=1
+uci firewall.freifunk_internet.dest='wan'
+uci commit firewall
+uci commet network
+/etc/init.d/firewall restart
+/etc/init.d/network restart
+```
+
+Indem Du `internet_share` und `internet_share6` werden die routes in die Freifunk Routing Tabelle eingetragen. 
+Mit Umleiten der `dest` auf `wan` erlaubst Du in der Firewall, dass Pakete über Dein Internet ausgeleitet werden. 
+
+**Hinweis**: *Du solltest Dein Internet nur dann freigeben, wenn Du Erfahrung im Abuse-Handling hast.*
 
 Wenig Speicherplatz?
 ----------------------
 Wenn Dein Node lediglich 4 MB Flash hat (z.B. TP-Link WR841n), dann musst Du ein LEDE-Image erstellen, in dem keine WebGUI enthalten ist - zum Beispiel:
 ```bash
-wget http://downloads.lede-project.org/releases/17.01.3/targets/ar71xx/generic/lede-imagebuilder-17.01.3-ar71xx-generic.Linux-x86_64.tar.xz
-tar xf lede-imagebuilder-17.01.3-ar71xx-generic.Linux-x86_64.tar.xz
-cd lede-imagebuilder-17.01.3-ar71xx-generic.Linux-x86_64
+wget http://downloads.lede-project.org/releases/17.01.4/targets/ar71xx/generic/lede-imagebuilder-17.01.4-ar71xx-generic.Linux-x86_64.tar.xz
+tar xf lede-imagebuilder-17.01.4-ar71xx-generic.Linux-x86_64.tar.xz
+cd lede-imagebuilder-17.01.4-ar71xx-generic.Linux-x86_64
 make image PROFILE="TLWR841" PACKAGES="ip openvpn-mbedtls  babeld fastd owipcalc batctl haveged kmod-nf-nathelper-extra kmod-pptp ppp-mod-pptp  ebtables kmod-ebtables-ipv4"
 ```
 

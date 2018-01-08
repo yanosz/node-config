@@ -40,7 +40,7 @@ config rule
 # 
 # Das routed-VPN ist hier, da routed-VPNs nur Sinn machen, wenn sie
 # in der Freifunk-Community betrieben werden
-config zone
+config zone 'freifunk'
 	option forward 'ACCEPT'
 	option output 'ACCEPT'
 	option input 'REJECT'
@@ -116,7 +116,7 @@ config rule
 
 config rule
         option name 'Allow-ICMPv6-Output (VPN)'
-        option dest 'vpn6'
+        option dest 'vpn'
         option proto 'icmp'
         option limit '1000/sec'
         option family 'ipv6'
@@ -134,6 +134,28 @@ config rule
 	option target 'ACCEPT'
 	
 # Ein Forwarding zwischen VPN und freifunk ist definiert.
-config forwarding
+# Dest durch WAN ersetzen, falls das Internet ohne VPN freigegeben werden soll
+config forwarding 'freifunk_internet'
 	option dest 'vpn'
 	option src 'freifunk'
+
+config rule
+        option name 'Do not forward freifunk traffic to RFC1918 address in WAN zone'
+        option src 'freifunk'
+        option dest 'wan'
+        list dest_ip '10.0.0.0/8'
+        list dest_ip '192.168.0.0/16'
+        list dest_ip '172.16.0.0/12'
+        option family 'ipv4'
+        option target 'REJECT'
+        option proto 'all'
+
+config rule
+        option name 'Do not forward freifunk traffic to local ipv6-addresses in WAN zone'
+        option src 'freifunk'
+        option dest 'wan'
+        list dest_ip 'fc00::/7'
+        list dest_ip 'fec0::/10'
+        option family 'ipv6'
+        option target 'REJECT'
+        option proto 'all'

@@ -1,0 +1,19 @@
+# Freifunk-Eigene Konfigration (Map, etc.)
+package node_config
+
+# Daten uebertragen
+config monitoring
+        option enabled '0'
+        option server 'fdd3:5d16:b5dd:fc33:70d0:57ff:febb:8f14'
+
+# Standort
+config position
+        option lat '52.5208'
+        option long '13.40942'
+        option street 'Panoramastrasse'
+        option zip '10178'
+        option city 'Berlin'
+
+# Kontaktdaten
+config contact
+        option mail 'someone@somewhere.com'

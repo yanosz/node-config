@@ -25,6 +25,8 @@ uci -m import openvpn   	< /lib/freifunk/initial_configuration/openvpn.uci
 uci import babeld 		< /lib/freifunk/initial_configuration/babeld.uci
 uci import batman-adv 	< /lib/freifunk/initial_configuration/batman-adv.uci
 uci import fastd 		< /lib/freifunk/initial_configuration/fastd.uci
+uci import node_config 		< /lib/freifunk/initial_configuration/node_config.uci
+
 # Fix binding
 /lib/freifunk/initial_configuration/fastd_binding.sh
 
