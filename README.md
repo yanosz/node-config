@@ -90,6 +90,17 @@ Als fastd-Peer in gluon muss die LAN-Adresse Deines Nodes (z.B. `192.168.1.1`) u
 
 Der letzte Befehl zeigt den fastd Public-Key. Nun kannst Du die WAN-Ports der Gluon-Router (blauer Port) mit den LAN-Ports des Routers (gelbe Ports) verbinden. 
 
+LEDE-Pakete? GUI? Firmware ?
+-----------------------------
+
+Du kannst auch opkg-Pakete obauen. Werf' einen Blick ins [Makefile](Makefile) `make world` baut alle notwendigen Pakete.
+
+Die GUI ist noch recht roh. Details gibt's hier: https://github.com/yanosz/firmware-wizard-frontend
+
+Für Firmware-Files schau auf https://git.kbu.freifunk.net/yanosz/node-config-feed - denk' daran, die submodules zu aktualisieren.
+Die Firmware-Files enthalten auch die GUI.
+
+
 Die Details
 -----------------------
 #### Shell-Scripts
