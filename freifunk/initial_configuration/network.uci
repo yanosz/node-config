@@ -7,12 +7,13 @@ config interface 'internet_share'
         option ifname '@wan'
         option proto 'dhcp'
         option ip4table '66'
-        option enabled '0'
+        option disabled '1'
+
 # Dann fuer IPv6
 config interface 'internet_share6'
         option ifname '@wan'
         option ip6table '66'
-        option enabled '0'
+        option disabled '1'
         option proto 'dhcpv6'
 
 # bat0 Interface - wird fuer batman-adv Bridgin benoetigt
@@ -28,7 +29,7 @@ config interface 'bat0'
 # via ip6assign und ip6class wird erreicht, dass der konfigurierte
 # ULA range fuer router advertisments zur Verfuegung steht
 config interface 'freifunk'
-    option enabled '0'
+        option disabled '1'
 	option ifname 'bat0'
 	option type 'bridge'
 	option auto '1'
@@ -46,7 +47,7 @@ config interface 'freifunk'
 # Auf dem Interface ist die IPv4 Adresse des Nodes konfiguriert - 
 # jedoch ohne entspr. Fuer IPv6 wird einfach die Link Local Adresse verwendet
 config interface 'fastd' 
-    option enabled '0'
+        option disabled '1'
 	option ifname 'tap-icvpn'
 	option proto 'static'
 	option ipaddr '10.159.64.1'
@@ -77,7 +78,7 @@ config interface 'vpn6'
 # - yagi.freifunk-koeln.de
 # Accounts: E-Mail an vpn@freifunk-koeln.de
 config interface 'vpn_pptp'
-        option enabled '0'
+        option disabled '1'
         option proto 'pptp'
         option server 'omni.freifunk-koeln.de'
         option username 'user'
@@ -125,7 +126,7 @@ config route6 'route_6_node_subnet'
 	option table '66'
 
 config interface 'babel_mesh'
-        option enabled '0'
+        option disabled '1'
         option proto 'static'
         option ipaddr '10.159.64.1'     
         option netmask '255.255.255.255'
@@ -133,7 +134,7 @@ config interface 'babel_mesh'
         option ip6table '66'
 
 config interface 'babel_mesh5'                                                          
-        option enabled '0'
+        option disabled '1'
         option proto 'static'
         option ipaddr '10.159.64.1'                                                    
         option netmask '255.255.255.255'                                               

@@ -79,12 +79,20 @@ node_bat0_wifi_ifs(){
 }
 
 node_bat0_wired_ifs(){
-	for interf in `batctl if | cut -f1 -d ':'`; do                                                 
-                details=$(iw dev $interf info 2> /dev/null)                                            
-                if [ -z "$details" ]; then                                                           
-                        echo $interf                                                                   
-                fi                                                                                     
-        done  
+	for interf in `batctl if | cut -f1 -d ':'`; do
+                details=$(iw dev $interf info 2> /dev/null)
+                if [ -z "$details" ]; then
+                        echo $interf
+                fi
+        done
+}
+
+node_uptime(){
+	cat /proc/uptime  | cut -f 1 -d " "
+}
+
+node_load_avg(){
+	cat /proc/loadavg | cut -f 1 -d " "
 }
 
 # get mac-address from device (private function)
@@ -96,4 +104,3 @@ _mac_address(){
 _wifi_ifnum(){
   echo $(iw phy | grep Wiphy | wc -l)
 }
-

@@ -45,8 +45,8 @@ Vergiss nicht, die Routes in die Freifunk Routing-Tabelle zu schreiben. Setze hi
 
 Wenn Du  Dein eigenes Internet ohne VPN freigeben willst, geh' wie folgt vor:
 ```bash
-uci set network.internet_share.enabled=1
-uci set network.internet_share6.enabled=1
+uci set network.internet_share.disabled=1
+uci set network.internet_share6.disabled=1
 uci firewall.freifunk_internet.dest='wan'
 uci commit firewall
 uci commet network

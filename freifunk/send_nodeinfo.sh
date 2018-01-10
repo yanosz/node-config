@@ -66,7 +66,7 @@ compressed=$(gzip -c < /tmp/nodeinfo.json)
 server=$(uci get node_config.@monitoring[0].server)
 while true; do
     echo "Sending to: ${server}"
-    echo ${compressed} | nc -u $server 4711
-    sleep 10;
+    echo ${compressed} | nc -u $server 45123
+    sleep 60;
 done
 
