@@ -1,10 +1,12 @@
+Please see [Readme.en.md] for an English.
+
 Worum geht's?
 --------------------
 Dieses Projekt enthält einige Konfigurationsdateien, die beispielhaft für einen Freifunk-Node verwendet werden können.
 Du kannst die Konfiguration auf Deinen Node kopieren, anpassen und anwenden.
 
 Voraussetzung ist LEDE 17.01 mit ausreichend Speicherplatz. Der Node muss mit dem Internet (WAN-Port) und einem PC / Notebook (LAN-Port) verbunden werden.
-Die alte OpenWRT Konfiguration findet sich im Branch `openwrt`. Die
+Die alte OpenWRT Konfiguration (Chaos Calmer) findet sich im Branch `openwrt`. Die
 
 In der Anleitung gehe ich davon aus, dass Du mit der Konsole aus Linux (Mac OS, Unix, usw.) vertraut bist, git installiert ist und Du Dich per `ssh` mit dem lede-Router verbinden kannst. Evtl. musst Du noch Software installieren - auf Windows z.B. cygwin mit bash, git und ssh.
 
@@ -18,14 +20,14 @@ Führe folgende Befehle auf Deinem PC oder Laptop aus:
 2. Datei auf den Node kopieren: `cd node-config; scp -r freifunk root@192.168.1.1:/lib`
 3. Node installieren: `ssh root@192.168.1.1 /lib/freifunk/install.sh`
 
-#### Hinweis: 
+#### Hinweis:
 * Je nach Community sollten die IP-Adressen in eine Wiki eingetragen werden - für Freifunk KBU:  https://kbu.freifunk.net/wiki/index.php?title=IP_Subnetze#Dezentrale_Nodes
 * `192.168.1.1` steht für die LAN IP-Adresse des Routers. Es muss angepasst werden, wenn die LAN IP-Adresse des Routers geändert wurde.
 
 
 Bekannte Probleme
 -----------------------
-1. Die Installation des ebtables-Pakets schlägt fehl, da Module bereits geladen werden. Der Fehler kann ignogiert werden. 
+1. Die Installation des ebtables-Pakets schlägt fehl, da Module bereits geladen werden. Der Fehler kann ignogiert werden.
 2. Die DHCPv6-Prefix delegation im ad-hoc Netz ist ungetestet und wahrscheinlich kaputt
 
 
@@ -33,10 +35,10 @@ Internet freigeben?
 ------------------------
 Du kannst das Internet entweder über einen VPN-Tunnel oder direkt freigeben:
 
-#### OpenVPN-Tunnel 
+#### OpenVPN-Tunnel
 
-Für einen VPN-Tunnel (z.B. via mullvad) musst Du die entsprechende Anbieter-Konfiguration in `/lib/freifunk/vpn` 
-auf dem Node hinterlegen und in [`/etc/config/openvpn`](freifunk/initial_configuration/openvpn.uci) aktivieren. 
+Für einen VPN-Tunnel (z.B. via mullvad) musst Du die entsprechende Anbieter-Konfiguration in `/lib/freifunk/vpn`
+auf dem Node hinterlegen und in [`/etc/config/openvpn`](freifunk/initial_configuration/openvpn.uci) aktivieren.
 
 Falls Du einen anderen OpenVPN-Provider nutzen willst, kannst Du Dich an der existierenden Konfiguration orientieren.
 Vergiss nicht, die Routes in die Freifunk Routing-Tabelle zu schreiben. Setze hierzu die Optionen: `route-nopull`, `script-security 2` und `up /lib/freifunk/vpn/up.sh` ([Beispiel](freifunk/vpn/yanosz/client.conf)).
@@ -54,8 +56,8 @@ uci commet network
 /etc/init.d/network restart
 ```
 
-Indem Du `internet_share` und `internet_share6` werden die routes in die Freifunk Routing Tabelle eingetragen. 
-Mit Umleiten der `dest` auf `wan` erlaubst Du in der Firewall, dass Pakete über Dein Internet ausgeleitet werden. 
+Indem Du `internet_share` und `internet_share6` werden die routes in die Freifunk Routing Tabelle eingetragen.
+Mit Umleiten der `dest` auf `wan` erlaubst Du in der Firewall, dass Pakete über Dein Internet ausgeleitet werden.
 
 **Hinweis**: *Du solltest Dein Internet nur dann freigeben, wenn Du Erfahrung im Abuse-Handling hast.*
 
@@ -88,7 +90,7 @@ uci commit
 ```
 Als fastd-Peer in gluon muss die LAN-Adresse Deines Nodes (z.B. `192.168.1.1`) und der fastd Public-Key eintragen werden. Überprüfe, dass der fastd-Peer der einzige konfigurierte Peer ist, damit Du nicht beide Kollisionsdomänen verbindest.
 
-Der letzte Befehl zeigt den fastd Public-Key. Nun kannst Du die WAN-Ports der Gluon-Router (blauer Port) mit den LAN-Ports des Routers (gelbe Ports) verbinden. 
+Der letzte Befehl zeigt den fastd Public-Key. Nun kannst Du die WAN-Ports der Gluon-Router (blauer Port) mit den LAN-Ports des Routers (gelbe Ports) verbinden.
 
 LEDE-Pakete? GUI? Firmware ?
 -----------------------------
@@ -111,7 +113,7 @@ Shell-Scripts installieren die Konfiguration auf dem Node. Es gibt:
 * [freifunk/install.sh](freifunk/install.sh) - Ruft die anderen Scripts in der richtigen Reihenfolge auf
 
 #### Konfiguration
-Die Konfiguration sind .uci-Dateien die importiert werden - ausgenommen ebtables und wireless: Die UCI-Einstellungen werden dynamisch per Shellscript generiert. Ich geb' hier nur eine grobe Übersicht über die enthaltene Konfiguration. **Alle Dateien sind ausführlich kommentiert. Details findest in den Files selbst**. 
+Die Konfiguration sind .uci-Dateien die importiert werden - ausgenommen ebtables und wireless: Die UCI-Einstellungen werden dynamisch per Shellscript generiert. Ich geb' hier nur eine grobe Übersicht über die enthaltene Konfiguration. **Alle Dateien sind ausführlich kommentiert. Details findest in den Files selbst**.
 
 ##### Babeld - [freifunk/initial_configuration/babeld.uci](freifunk/initial_configuration/babeld.uci)
 babeld wird als Routing-Protokoll genutzt. Es nutzt sowohl das ad-hoc Interface zum meshing und ein fastd-Interface zur Anbindung an weitere Supernodes und das ICVPN.
@@ -133,7 +135,7 @@ Eine weitere fastd-Instanz zum Betrieb eines lokalen Supernodes in Gluon-Netzen 
 
 ##### Firewall - [freifunk/initial_configuration/firewall.uci](freifunk/initial_configuration/firewall.uci)
 Die Firewall definiert Zonen für Freifunk und VPN-Tunnel zum Internet. Verkehr zwischen Freifunk und WAN / LAN wird per default unterbunden.
-**Der Node ist per SSH aus dem Freifunk-Netz erreichbar.** 
+**Der Node ist per SSH aus dem Freifunk-Netz erreichbar.**
 
 
 ##### Netzwerk - [freifunk/initial_configuration/network.uci](freifunk/initial_configuration/network.uci)
@@ -143,21 +145,21 @@ Darüber hinaus weißt sie dem Node-Interface die konfigurierten IP-Adressen zu 
 Hier gibt es auch eine Konfiguration für PPTP - falls Du ein entsprechendes VPN verwenden willst.
 
 ##### OpenVPN - [freifunk/initial_configuration/openvpn.uci](freifunk/initial_configuration/openvpn.uci)
-In der UCI-Datei sind Beispiel-Konfigurationen verschieder VPN-Anbieter realisiert. Die Anbieter-Konfiguration selbst findet sich in [freifunk/vpn](freifunk/vpn). Dazu musst Du Zertifikat und Key von Deinem VPN-Anbieter im Dateisystem ablegen und den entsprechenden Eintrag in `/etc/config/openvpn` aktvieren. 
+In der UCI-Datei sind Beispiel-Konfigurationen verschieder VPN-Anbieter realisiert. Die Anbieter-Konfiguration selbst findet sich in [freifunk/vpn](freifunk/vpn). Dazu musst Du Zertifikat und Key von Deinem VPN-Anbieter im Dateisystem ablegen und den entsprechenden Eintrag in `/etc/config/openvpn` aktvieren.
 
-- Mullvad 
+- Mullvad
     - Zertifikat: `/lib/freifunk/vpn/mullvad/mullvad.crt`
     - Key: `/lib/freifunk/vpn/mullvad/mullvad.key`
-- Freifunk Berlin 
+- Freifunk Berlin
     -  Zertifikat: `/lib/freifunk/vpn/freifunk_berlin/berlin.crt`
     -  Key: `/lib/freifunk/vpn/freifunk_berlin/berlin.key`
     -  Infos:  https://wiki.freifunk.net/Vpn03
-- Freifunk KBU: 
-    - Zertfikat `/lib/freifunk/vpn/freifunk_kbu/<Deine E-Mail-Adresse>.crt` 
+- Freifunk KBU:
+    - Zertfikat `/lib/freifunk/vpn/freifunk_kbu/<Deine E-Mail-Adresse>.crt`
     - Key: `/lib/freifunk/vpn/freifunk_kbu/<Deine E-Mail-Adresse>.`
     - Infos: https://kbu.freifunk.net/wiki/vpn-exit
-- yanosz (Für Tests): 
-    - Zertfikat `/lib/freifunk/vpn/yanosz/<Deine E-Mail-Adresse>.crt` 
+- yanosz (Für Tests):
+    - Zertfikat `/lib/freifunk/vpn/yanosz/<Deine E-Mail-Adresse>.crt`
     - Key: `/lib/freifunk/vpn/yanosz/<Deine E-Mail-Adresse>.key`
     - Infos: freifunk@yanosz.net
 
@@ -167,4 +169,3 @@ Definiert 2 Wifi-Netze (ad-hoc + AP).
 Falls ein 2. Wifi-Device vorhanden ist (radio1) wird ist als 5 Ghz Wifi für den Kanal 36 konfiguriert.
 
 Falls eine eindeutige lede default Konfiguration auf einem deaktivierten WLAN erstellt ist, so wird die Konfiguration gelöscht.
-
