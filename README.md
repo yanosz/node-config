@@ -1,4 +1,4 @@
-Please see [Readme.en.md] for an English.
+Please see [Readme.en.md] for an English version.
 
 Worum geht's?
 --------------------
@@ -47,8 +47,8 @@ Vergiss nicht, die Routes in die Freifunk Routing-Tabelle zu schreiben. Setze hi
 
 Wenn Du  Dein eigenes Internet ohne VPN freigeben willst, geh' wie folgt vor:
 ```bash
-uci set network.internet_share.disabled=1
-uci set network.internet_share6.disabled=1
+uci set network.internet_share.disabled=0
+uci set network.internet_share6.disabled=0
 uci firewall.freifunk_internet.dest='wan'
 uci commit firewall
 uci commet network
@@ -56,7 +56,7 @@ uci commet network
 /etc/init.d/network restart
 ```
 
-Indem Du `internet_share` und `internet_share6` werden die routes in die Freifunk Routing Tabelle eingetragen.
+Indem Du `internet_share` und `internet_share6` aktivierst, werden die routes in die Freifunk Routing Tabelle eingetragen.
 Mit Umleiten der `dest` auf `wan` erlaubst Du in der Firewall, dass Pakete über Dein Internet ausgeleitet werden.
 
 **Hinweis**: *Du solltest Dein Internet nur dann freigeben, wenn Du Erfahrung im Abuse-Handling hast.*
@@ -116,7 +116,7 @@ Shell-Scripts installieren die Konfiguration auf dem Node. Es gibt:
 Die Konfiguration sind .uci-Dateien die importiert werden - ausgenommen ebtables und wireless: Die UCI-Einstellungen werden dynamisch per Shellscript generiert. Ich geb' hier nur eine grobe Übersicht über die enthaltene Konfiguration. **Alle Dateien sind ausführlich kommentiert. Details findest in den Files selbst**.
 
 ##### Babeld - [freifunk/initial_configuration/babeld.uci](freifunk/initial_configuration/babeld.uci)
-babeld wird als Routing-Protokoll genutzt. Es nutzt sowohl das ad-hoc Interface zum meshing und ein fastd-Interface zur Anbindung an weitere Supernodes und das ICVPN.
+babeld wird als Routing-Protokoll genutzt. Es nutzt sowohl das ad-hoc Interface zum meshing und ein fastd-Interface zur Anbindung an weitere nodes und das ICVPN.
 
 ##### batman-adv - [freifunk/initial_configuration/batman-adv.uci](freifunk/initial_configuration/batman-adv.uci)
 batman-adv wird zum Roaming innerhalb des Meshes verwendet. Jeder Node ist Gateway, d.h. betreibt einen dhcp-Server.
