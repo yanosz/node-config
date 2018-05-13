@@ -100,8 +100,7 @@ Du kannst auch opkg-Pakete obauen. Werf' einen Blick ins [Makefile](Makefile) `m
 
 Die GUI ist noch recht roh. Details gibt's hier: https://github.com/yanosz/firmware-wizard-frontend
 
-Für Firmware-Files schau auf https://git.kbu.freifunk.net/yanosz/node-config-feed - denk' daran, die submodules zu aktualisieren.
-Die Firmware-Files enthalten auch die GUI.
+Für Firmware-Files (build-job) schau auf https://git.kbu.freifunk.net/yanosz/node-config-feed - denk' daran, die submodules zu aktualisieren. Die Firmware-Files enthalten auch die GUI. Die Artefakte liegen auf https://kbu.freifunk.net/files/node-config (TLS) und http://opkg.kbu.freifunk.net/node-config.
 
 
 Die Details
