@@ -1,4 +1,5 @@
-Please see [Readme.en.md] for an English version.
+Please see [README.en.md](README.en.md) for an English version.
+
 
 Worum geht's?
 --------------------
