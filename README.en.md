@@ -24,7 +24,7 @@ Execute this commands on your pc / laptop.
 * `192.168.1.1` is the lan IP address of your router. If you've changed that, it has to changed accordingly.
 
 
-Bekannte Probleme
+Known issues?
 -----------------------
 1. The installation of ebtales errrors, since modules are already loaded. This can be ignored.
 2. DHCPv6 prefix delegation is untested an probably broken.
