@@ -103,6 +103,8 @@ For the build repository have a look at https://git.kbu.freifunk.net/yanosz/node
 
 For opkg-feeds you can access the server without TLS: http://opkg.freifunk.net/files/node-config/
 Die
+
+
 The details Details
 -----------------------
 #### Shell-Scripts
