@@ -101,7 +101,7 @@ The GUI is under development. For details see: https://github.com/yanosz/firmwar
 LEDE Firwmare images are placed at https://kbu.freifunk.net/files/node-config/ - it is built by
 For the build repository have a look at https://git.kbu.freifunk.net/yanosz/node-config-feed.
 
-For opkg-feeds you can access the server without TLS: http://opkg.freifunk.net/files/node-config/
+For opkg-feeds you can access the server without TLS: http://opkg.kbu.freifunk.net/node-config/
 Die
 
 
