@@ -1,0 +1,490 @@
+= Node-Config Documentation
+:doctype: book
+:appendix-caption: Appx
+:sectnums:
+:toc: right
+:source-highlighter: coderay
+
+= Introduction & Quick-start
+Most of us are into free wireless mesh networks. We're fascinated by the idea of
+deploying a bunch of OpenWRT routers, that magically connect to each other
+to span large mesh cloud.
+
+Unfortunately, doing so is very hard - the various different options for mesh routing protocols
+and network designs can be overwhelming.
+
+
+Many community networks deploy complex configurations. They release
+custom firmware blobs using self-written scripts to customize OpenWRT images.
+Usually, these firmware blobs are tight to a specific network by including network addresses or wifi identifiers.
+
+Some Freifunk firmware files even include vpn-server-addresses, rendering them useless for other communities or
+people living just a few kilometers away.
+
+Here, configuration becomes opaque and thus hard to understand: It's buried in binary images using custom
+software and different, sometimes hackish startup-scripts.
+
+Build systems such as Gluon provide a heavy-weight abstraction to OpenWRT.
+By creating a Domain-Specific-Language (DSL), all relevant OpenWRT settings are duplicated into a site-model,
+which is then used to describe a specific community network. Although not having explicit restrictions,
+this site-model focuses on backend-server driven networks, somewhat missing the point of a wifi mesh network.
+Very little changes to the configuration require a build using the full OpenWRT buildroot.
+
+Node-config is trying to jump in here by providing a comprehensible configuration.
+Without having a shiny user interface in its core, node-config is focusing on network enthusiasts.
+It explains all necessary OpenWRT settings for a simple wifi mesh, while providing complete and easy-to-use setup.
+
+== What node-config is
+
+Node-config is just a _bunch of uci configuration files including a scripts to apply them_. It is copied to
+plain OpenWRT routers running Lede 17.01 and merged into the existing configuration. It configures routing, network- and wireless interfaces as
+well as network services such as dhcp and radv.
+
+It spans a mesh network using _both babel and batman-adv_ to provide roaming and
+hierarchical routing capabilities. The network is IPv4 and IPv6 dual-stack.
+
+
+[NOTE]
+====
+.You can use and understand node-config as:
+- An elaborate example for an OpenWRT mesh configuration
+- A kickstarter or template for wifi mesh networks without a central vpn (i.e. servers)
+- A way for building supernodish nodes in gluon based Freifunk networks to get rid of servers
+- A lean baseline for testing new architectures and services (i.e. l3roamd)
+====
+
+A git-repository is availble at  https://github.com/node-config -
+for help and discussions please subscribe to the
+https://lists.freifunk.net/mailman/listinfo/wlanware-freifunk.net[wlanware mailing list].
+
+
+== Quick-start
+
+You need https://downloads.openwrt.org[OpenWRT / LEDE 17.01] installed on a router and enough free flash space (~2 MB).
+The router has to be connected to the internet (wan port) an to your computer (pc or laptop using the lan port)
+
+It helps to be familiar with a unix terminal (i.e. Mac OS, Linux)
+since you need to use ssh to connect to your router. In addition, git is required:
+
+.On your computer execute:
+
+[#src-listing]
+[source,bash]
+----
+git clone https://github.com/yanosz/node-config.git
+cd node-config; scp -r freifunk root@192.168.1.1:/lib
+ssh root@192.168.1.1 /lib/freifunk/install.sh
+----
+
+It is assumed, that your router is reachable at `192.168.1.1` (OpenWRT default). Using `git`, `scp` and `ssh`
+node-config is cloned and then copied to your router. It is applied using <<_install_sh>>.
+
+
+WARNING: When executing `/lib/freifunk/install.sh` you are asked for one IPv4 (/24) and one IPv6 (/64) network.
+These networks are distributed using dhcp and radv and _have to be unique_.
+You _must not share a subnet among routers_. Using distinct RFC1918 ranges and IPv6 unique local addresses (ULA)
+is usually the way to go. Please mind bookkeeping.
+
+== Using packages
+
+Package can be used _instead of copying the filesystem tree_ using git and scp.
+
+For testing, opkg packages are available at: https://kbu.freifunk.net/files/node-config/. Packages are built
+using the projects <<_makefiles>> and Gitlab CI server.
+
+.To install the packages open a ssh session to your router and execute:
+
+[#src-listing]
+[source,bash]
+----
+wget -O /etc/opkg/keys/cca6643a8ac2f277 http://opkg.kbu.freifunk.net/node-config/cca6643a8ac2f277
+echo "src/gz nc http://opkg.kbu.freifunk.net/node-config/packages" >> /etc/opkg/customfeeds.conf
+opkg update
+opkg install node-config node-config-openvpn node-config-pptp
+----
+_Reboot the router_, after installing the packages.
+For setting IPv4 and IPv6 networks open a new ssh session execute `/lib/freifunk/set_ip.sh`.
+When executing `opkg install node-config`, core components are installed, only - openvpn and pptp are not available.
+
+[CAUTION]
+====
+1. Make sure, that `/etc/opkg/keys/cca6643a8ac2f277` matches the key available at
+https://kbu.freifunk.net/files/node-config/cca6643a8ac2f277 - the download _is not using TLS_.
+2. The public key for `cca6643a8ac2f277` is availble in our Gitlab CI and may be easily become compromised.
+Consider using you own key when using packages. For details see <<_makefiles>>.
+====
+
+== Internet Sharing
+
+=== Direct Exit
+To share the routers WAN uplink in the mesh cloud, you have to enable it.
+
+.Open a ssh session to your router and execute:
+
+[#src-listing]
+[source,bash]
+----
+uci set network.internet_share.disabled=0
+uci set network.internet_share6.disabled=0
+uci firewall.freifunk_internet.dest='wan'
+uci commit firewall
+uci commet network
+/etc/init.d/firewall restart
+/etc/init.d/network restart
+----
+
+NOTE: By enabling `internet_share` and `internet_share6`, WAN routes will be copied to the
+mesh routing table. `uci firewall.freifunk_internet.dest='wan'` enables forwarding.
+
+=== Using a VPN provider
+To use a vpn tunnel (i.e. mullvad),
+you can use a configuration in `/lib/freifunk/vpn` and activate it by editing `/etc/config/openvpn`.
+See <<__etc_config_openvpn>> for details.
+
+TIP: If you want to use a provider not included in
+`/lib/freifunk/vpn`, you can place your provider's configuration there.
+Mind adding `route-nopull`, `script-security 2` and `up /lib/freifunk/vpn/up.sh` for default route handling.
+Have a look at existing VPN configurations for example.
+
+== Git directory structure
+
+All configuration can be found in `/freifunk/initial_configuration`. Other directories contain scripts,
+build files and documentation.
+
+|===
+|Path |Contents
+|`/`
+| Directory root, including readme's, the project's Makefile and CI-configuration
+|`/doc`
+| Documentation including the asciidoc source of this manual
+|`/freifunk`
+| Configuration including scripts
+|`/freifunk/initial_configuration`
+| OpenWRT configuration (uci)
+|`/freifunk/lib`
+| Shared routines for scripts
+|`/freifunk/vpn`
+| OpenVPN exit configuration for different providers
+|`/lede_built/node-config`
+| Makefiles and other files for creating OpenWRT packages
+|===
+
+= Configuration in node-config
+
+The configuration is documented on a per-file basis - Each OpenWRT configuration is explained individually.
+
+Figure 1 shows the system from a birds eye perspective.
+
+.Interface configuration - bird's eye perspective
+image::interface-configuration.png[]
+
+Node-config creates a hand full of interfaces: wlan0, wlan1, bat0, br-freifunk
+as well as vpn interfaces like tap0 and ppp0. They are configured as follows:
+
+.External interfaces (switch ports, radio)
+* _wlan0_ and _wlan1_ are set up by node-config
+** wlan0 is running in master mode. It's used by all clients.
+** wlan1 is running in ad-hoc (or 802.11s) mode. This interface is used for meshing.
+* _ethX (WAN)_ and _ethY (LAN)_ are created by OpenWRT. They are not configured by node-config.
+** The LAN interface is used for a management (SSH / LuCI).
+** The WAN interface connects to the internet. It can be used for internet sharing.
+** Optionally, a VPN (openvpn, pptp, wiregard) can tunnel internet traffic.
+
+.Internal interfaces (bridges, vpn)
+* _bat0_ is the batman-adv interface of the system. It utilizes the ad-hoc interface for meshing.
+* _br-freifunk_ is central: It bridges all clients (wlan0) into the roaming domain (wlan1).
+* Other vpn interfaces (_fastd: tap0, l2tp: l2tpeth0_) are optional: They created and
+ assigned to batman-adv and / or babel to mesh and roam using wires or directed wireless links.
+
+
+Some interfaces are used by services to provide connectivity:
+
+.Miscellous interfaces (not shown)
+* _DHCP_ and _radv_ services are running on br-freifunk. They hand out ip-addresses to clients.
+However, these dropped on bat0 using ebtables to reduce broadcast / multicast traffic.
+* _babel_ is running on the wlan1 interface and all vpn interfaces used for mesh routing.
+
+WARNING: Mind not to bind the optional vpn interfaces to br-freifunk / bat0.
+It is easy to have a catch-22.
+
+Some interfaces are missing in the picture - have a look at the actual system:
+
+.Additional interfaces
+* Most interfaces have an IPv6 counterpart. These duplicates are needed by OpenWRT
+* `internet_share` is a duplicate of the  WAN interfaces.
+It's used for copying WAN routes into the freifunk routing tables.
+* By default, node-config creates two optional interfaces using fastd. One is for
+Routing within Freifunk communities (_enabled_), while the other is part of the
+Freifunk / Gluon supernode template (_disabled_)
+
+
+== /etc/config/wireless
+
+
+The wireless configuration is generated using a shell script:
+
+
+.Content of `wireless.sh`
+[#src-listing]
+[source,bash]
+----
+include::../freifunk/initial_configuration/wireless.sh[]
+----
+
+
+.Three things are done by `wireless.sh`:
+
+1. It detects how many radios are available
+* If there's a radio, 2.4 Ghz is assumed. It's locked to channel 1 and enabled
+* If there's a second radio, 5 Ghz is assumed. It's locked to channel 36 and enabled.
+* Other radios are ignored
+2. If unused OpenWRT default configurations are present on a radio, they are disabled.
+3. An ad-hoc interface with SSID `42:42:42:42:42:42` and an access point interface with SSID `Freifunk`
+is created on all radios detected before. All ad-hoc interfaces use a broadcast rate of 12 MBit/s. While the 5 Ghz radio is using 40 Mhz,
+the 2.4 GHz has 20 MHz.
+
+Additional information in wireless
+configuration can be found in the OpenWRT wiki. the https://openwrt.org/docs/guide-user/network/wifi/basic[OpenWRT wiki].
+
+
+WARNING: The regulatory region is set to `DE` (Germany).
+Please adjust if needed
+
+
+
+== /etc/config/batman-adv
+https://www.open-mesh.org/projects/batman-adv/wiki[Batman-adv] is used for roaming.
+It uses all wifi ad-hoc interface (2.4 Ghz and 5 Ghz). In addition, VPN (l2tp, fastd)
+interfaces can be added to improving roaming when no radio contact is availble.
+
+.`batman-adv.uci` creates a mesh (`bat0`) usign these options.
+[#src-listing]
+[source,bash]
+----
+include::../freifunk/initial_configuration/batman-adv.uci[]
+----
+
+Having hardly any mobility in a Freifunk-style network, an originator interval of 5 seconds
+is enough. Bridge loop avoidance, the distributed arp table
+and ogm aggregation is enabled.
+
+
+Fragmentation is enabled for roaming using wired interfaces. Usually, ethernet, l2tp or fastd
+connections cannot transmit a complete batman-adv frame
+using up to 1532 bytes without fragmentation.
+
+The configuration does not contain any network interfaces. The mapping is done in
+`/etc/config/network`. More configuration options are listed in the
+https://www.open-mesh.org/projects/batman-adv/wiki/Batman-adv-openwrt-config[Open-Mesh wiki].
+
+== /etc/config/network
+
+The network configuration is probably the most complex part of node-config.
+Be brave, you'll make it :-).
+
+Have a look at the https://openwrt.org/docs/guide-user/base-system/basic-networking
+for additional help on OpenWRT's network configuration.
+
+=== Network Interfaces
+Let's look at the network interfaces first (cf. `network.ci`).
+
+.These network interfaces are created in `/etc/config/network`
+
+[#src-listing]
+[source,uci]
+----
+include::../freifunk/initial_configuration/network.uci[tags=interfaces]
+----
+
+That is it :-). Try matching these interfaces with bird's eye perspective picture in the
+beginning (Figure 1).
+
+NOTE: You might need to adjust some interfaces according to your local
+setup (i.e. `internet_share` - use `proto 'static'` instead of `proto 'dhcp'`). All vpn and fastd interfaces can be removed, if vpn connections are not in use.
+
+
+=== Routes & Rules
+
+Node-config uses a dedicated routing table (66). This allows separating the mesh
+from uplink and management networks. To build this table, all relevant IPv4 and IPv6 routes
+are duplicated. In addition, IP rules assign mesh traffic to this table.
+
+Have a look at the https://www.tldp.org/HOWTO/Adv-Routing-HOWTO/[Linux Advanced Routing & Traffic Control HOWTO]
+for more information on policy based routing.
+
+.Routes and Rules in `network.uci`
+
+[#src-listing]
+[source,uci]
+----
+include::../freifunk/initial_configuration/network.uci[tags=routes]
+----
+
+Unfortunately, OpenWRT cannot create all rules using `/etc/config/network`. Thus
+they're created using the firewall script `/etc/firewall.user`. Being part of node-config
+`rules.sh` modies the the firewall script. `|| true` prevents `firewall.user` from failing, if
+an interface is not available, yet.
+
+[NOTE]
+====
+* When adding new interfaces to babel (i.e. l2tp connections), new
+rules have to be added accordingly.
+* The firewall is reload, when new interfaces become available.
+====
+
+.Rules added by `firewall.user`
+
+[#src-listing]
+[source,uci]
+----
+include::../freifunk/initial_configuration/rules.sh[]
+----
+
+
+=== PPtP configuration
+
+`network_pptp.uci` has additional interfaces for PPtP. Due to this separation,
+PPtP interfaces are not created, when using the node-config opkg-package, only.
+
+.PPtP interface from `/etc/config/network_pptp.uci`
+
+[#src-listing]
+[source,uci]
+----
+include::../freifunk/initial_configuration/network_pptp.uci[]
+----
+
+
+
+== /etc/config/babeld
+
+https://www.irif.fr/~jch/software/babel/[Babeld] is used for routing.
+It uses the ad-hoc wifi interfaces. The optional interface tap-icvpn is included
+for Freifunk routing.
+
+
+.`/freifunk/initial_configuration/babeld.uci` defines these options:
+
+[#src-listing]
+[source,uci]
+----
+include::../freifunk/initial_configuration/babeld.uci[]
+----
+
+== /etc/config/dhcp
+
+OpenWRT uses dnsmasq and odhcpd to distribute prefixes. Node-config adds new
+definitions to:
+
+* Hand out IPv4 address configured manually (DHCP)
+* Announce the IPv6 network configured manually (radv)
+
+.Some configuration is done in /etc/config/network
+* Re-distributing prefixes assigned automatically to the internet uplink (DHCPv6 PD).
+* Annoucing the manually assigned /64 range for SLAAC.
+
+.These stanzas are added by `dhcp.uci`
+[#src-listing]
+[source,uci]
+----
+include::../freifunk/initial_configuration/dhcp.uci[]
+----
+
+[NOTE]
+====
+* Using https://www.unbound.net/[unbound] for DNS is a good option when using
+bigger router.
+* The OpenWRT wiki has more information on DHCP +
+ https://openwrt.org/docs/guide-user/base-system/dhcp_configuration +
+ https://openwrt.org/docs/guide-user/base-system/dhcp +
+ (outdated) https://openwrt.org/docs/guide-user/services/dns/unbound
+
+====
+
+== /etc/config/fastd
+
+Fastd is a simple, decentralized vpn software. By default, fastd does neither
+switching nor routing. Both is handled by batman-adv and babel.
+
+.VPN definitions `fastd.uci`
+[#src-listing]
+[source,uci]
+----
+include::../freifunk/initial_configuration/fastd.uci[]
+----
+
+fastd is bound to the lan and lan interface, only. It makes no sense to use the mesh to
+tunnel mesh packages. Unfortunately, interfaces cannot be referenced by its OpenWRT name -
+thus the binding is done using shell.
+
+.fastd binding: `fastd_binding.sh`
+[#src-listing]
+[source,uci]
+----
+include::../freifunk/initial_configuration/fastd_binding.sh[]
+----
+
+
+== /etc/config/firewall & firewall.user
+
+Firewalling is done using the OpenWRT firewall and ebtables.
+
+At quick glance, the firewall is used to seperate the mesh from other networks.
+
+.The firewall
+
+* Creates a vpn and a freifunk zone. Forwarding from freifunk to vpn is allowed.
+* Exposes the fastd vpn on the WAN interface (meshing, roaming via vpn)
+* Makes the router accessible from the freifunk zone
+* Takes care of NAT internet traffic
+* Blocks broadcast / anycast traffic to the batman-adv mesh
+
+CAUTION: Set a password on your router. It is accessible from the mesh network.
+
+.OpenWRT firewall configuration
+[#src-listing]
+[source,uci]
+----
+include::../freifunk/initial_configuration/firewall.uci[]
+----
+
+Broadcast / anycast traffic is blocked using ebtables. ebtables rules are not
+exposed via uci. `firewall.sh` takes care of adding this rules to the `firewall.user` script.
+
+.Contents of firewall.sh
+[#src-listing]
+[source,uci]
+----
+include::../freifunk/initial_configuration/firewall.sh[]
+----
+
+[NOTE]
+====
+For policy routing, additional ip-rules are added to `firwall.sh`. See <<_routes_rules>> for details.
+See the https://openwrt.org/docs/guide-user/firewall/firewall_configuration[OpenWRT] wiki for more information on Firewalling
+====
+
+== /etc/config/openvpn
+
+== /etc/config/node-config
+
+
+= Advanced Topics
+
+== Building node-config
+
+=== Makefiles
+
+=== .travis-ci.yml
+
+=== install.sh
+
+== Creating Firmware & Configuration Management
+
+== Underlaying concepts
+
+=== Roaming
+
+=== IPv6 Multihoming & Prefix delegation
+
+=== ICVPN routing

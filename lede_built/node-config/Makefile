@@ -27,7 +27,7 @@ define Build/Prepare
 	mkdir -p $(PKG_BUILD_DIR)
 	$(CP) ../../freifunk $(PKG_BUILD_DIR)
 	cp Makefile $(PKG_BUILD_DIR)
-	cp uci-defaults $(PKG_BUILD_DIR)
+	cp uci-defaults* $(PKG_BUILD_DIR)
 endef
 
 define Build/Compile/Default
@@ -39,7 +39,7 @@ define Package/node-config/install
 	$(INSTALL_DIR) $(1)/lib/freifunk
 	$(CP) $(PKG_BUILD_DIR)/freifunk/* $(1)/lib/freifunk
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
-	$(CP) $(PKG_BUILD_DIR)/uci-defaults $(1)/etc/uci-defaults/zzz-node-config
+	$(CP) $(PKG_BUILD_DIR)/uci-defaults $(1)/etc/uci-defaults/zza-node-config
 endef
 
 define Package/node-config-openvpn
@@ -63,12 +63,13 @@ define Package/node-config-pptp/description
 endef
 
 define Package/node-config-pptp/install
-	@echo "Nothing to be done"
-
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(CP) $(PKG_BUILD_DIR)/uci-defaults-pptp $(1)/etc/uci-defaults/zzc-node-config-pptp
 endef
 
 define Package/node-config-openvpn/install
-	@echo "Nothing to be done"
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(CP) $(PKG_BUILD_DIR)/uci-defaults-openvpn $(1)/etc/uci-defaults/zzb-node-config-openvpn
 endef
 
 

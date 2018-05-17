@@ -4,11 +4,9 @@ echo "
 #!/bin/sh
 
 # Hack: https://lists.openwrt.org/pipermail/openwrt-users/2016-March/004150.html
-# Da folgende rule nicht via /etc/config/network eingetragen werden kann, 
-# erfogt es im Rahmen der firewall
+# Since /etc/config/network cannot be used for intering rules, the firewall script is used
 
-# Pref 66 ist wichtig, da die Rules sonst mit priority 0, d.h. for local
-# eingetragen werden
+# Pref 66 is important. It prevents rules with priority 0 (for local)
 
 ip rule del iif wlan0 lookup 66 pref 66 || true
 ip rule del oif wlan0 lookup 66 pref 66 || true

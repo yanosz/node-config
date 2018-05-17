@@ -2,13 +2,13 @@
 
 # Das Script kann nur einmal ausgeführt werden
 if [ -f /lib/freifunk/config_import_done ];then
-  echo "Konfiguration wurde bereits importiert"
+  echo "Configuration already imported // Konfiguration wurde bereits importiert"
   exit 0
 fi
 touch /lib/freifunk/config_import_done
 
 # Importiere vorhandene Konfiguration
-# Firwall und ebtables haben eine Sonderrolle: 
+# Firwall und ebtables haben eine Sonderrolle:
 # Die Konfiguration kann nicht einfach per uci merged werden und wird per Script aufgenommen
 /lib/freifunk/initial_configuration/firewall.sh
 /lib/freifunk/initial_configuration/wireless.sh
@@ -19,6 +19,7 @@ touch /lib/freifunk/config_import_done
 # Bei allen anderen Paketen wird die vorhandene Konfiguration ersetzt
 uci -m  import firewall  	< /lib/freifunk/initial_configuration/firewall.uci
 uci -m import network 	 	< /lib/freifunk/initial_configuration/network.uci
+uci -m import network 	 	< /lib/freifunk/initial_configuration/network_pptp.uci
 uci -m import dhcp 		< /lib/freifunk/initial_configuration/dhcp.uci
 uci -m import openvpn   	< /lib/freifunk/initial_configuration/openvpn.uci
 
@@ -32,4 +33,3 @@ uci import node_config 		< /lib/freifunk/initial_configuration/node_config.uci
 
 # Curser abschliessen
 uci commit
-

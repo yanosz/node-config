@@ -1,21 +1,16 @@
 package fastd
 
-# Fastd (layer-2) hier beispielhaft fuer einen WAN-Uplink
-# zum Zugriff auf das ICVPN konfiguriert
+#fastd is used for Freifunk routing and supernode-stuff
 
-# Im fastd wird babel als Routing-Protokoll verwendet
-# Fuege eigene Peers hinzu, wenn Daten mit anderen Freifunk-Nodes austauschen moechtest,
-# Die nicht in Funkreichweite sind
-
-# Zum Test: Peer fuer das ICVPN.
-# Besser: Installiere Deinen eigenen ICVPN-Peer. z.B. auf einem Rasperry Pi
+# Test peer for Freifunk routing.
+# Better: Setup your own peer and connect it to the icvpn usign BGP
 config peer 'icvpn_test'
 	option remote 'ipv4 "5.9.31.99" port 11003'
 	option enabled '1'
 	option net 'backbone'
 	option key 'fa824f8d39adcb3ad6232660bda439020d3c2e61dd56466439fc66c0ee159b41'
 
-# Das Backbone-Netz (hier fuer das ICVPN) ist per default verschluesselt
+# Network definition for Freifunk routing
 config fastd 'backbone'
 	option enabled '1'
 	option syslog_level 'warn'
@@ -28,7 +23,7 @@ config fastd 'backbone'
 #	list bind 'any:10000' # Bind is done using shell
 	option secret 'generate'
 
-# Lokaler Supernode - kompatibel zu gluon, etc.
+# Template for Gluon suoernodes / disabled by default
 config fastd 'supernode'
 	option enabled '0'
 	option syslog_level 'warn'

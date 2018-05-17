@@ -1,0 +1,8 @@
+#!/bin/sh
+# Importing configuration, only:
+# - Software installation is done by dependencies
+# - IP-Configuration nees interaction
+#!/bin/sh
+uci -m import network < /lib/freifunk/initial_configuration/network_pptp.uci
+uci commit
+exit 0

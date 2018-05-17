@@ -1,0 +1,18 @@
+# VPN - if pptp is used
+# Servers are
+# - omni.freifunk-koeln.de
+# - yagi.freifunk-koeln.de
+# Accounts: please mail vpn@freifunk-koeln.de
+config interface 'vpn_pptp'
+        option disabled '1'
+        option proto 'pptp'
+        option server '195.54.164.202'
+        option username 'user'
+        option password 'password'
+        option ip4table '66'
+        option ip6table '66'
+
+config interface 'vpn_pptp6'
+        option proto 'dhcpv6'
+        option ifname '@vpn_pptp'
+        option ip6table '66'

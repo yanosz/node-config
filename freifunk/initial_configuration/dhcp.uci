@@ -1,17 +1,17 @@
 package dhcp
 
-# Der DHCP-config wird ein Server (IPv6 und IPv4) fuer das Freifunk-Netz hinzugefuegt
-# Er liefert beinahe den kompletten Class-C Range aus.
-# IPv6 ist so konfiguriert, dass der Node als Default-Router auch fuer den ULA-Range arbeitet
-# Damit ist ein Zugriff auf den kompletten ULA range moeglich.
+# A DHCP and radvd service is configured for the Freifunk interface
+# The 254 address are used out the the manual prefix.
 
-# Subnet-Delegation ist deaktiviert. Sie findet nur auf dem ad-hoc Interface statt
-# Fuer das Freifunk-Netz sind IPv6-Adressbloecke /64 zugewiesen, so dass hier nichts
-# weiter verteilt werden kann.
+# For radvd, a default route is annouced. This enables routing freifunk traffic
+# Subnet delegation is inactive. Subnets are delegated using the mesh interface, only
+
+# Annoucing the configured /64 network is already part of /etc/network/interfaces.
+# It doesn't hae to be configured, here
 config dhcp 'freifunk'
 	option interface 'freifunk'
 	option start '2'
-	option limit '250'
+	option limit '254'
 	option leasetime '10m'
 	option dhcpv6 'none'
 	option ra 'server'

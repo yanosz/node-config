@@ -1,0 +1,4 @@
+#!/bin/sh
+uci -m import openvpn < /lib/freifunk/initial_configuration/openvpn.uci
+uci commit
+exit 0

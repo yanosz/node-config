@@ -1,33 +1,12 @@
 package network
 
-# Um das Internet lokal freigeben zu koennen, wird das WAN-Interface erneut definiert
-# Hier nutzt es jedoch die Routing-Tabelle 66, damit die routes im Freifunk-Routing korrekt erkannt werden
-# Zunaechst fuer IPv4
-config interface 'internet_share'
-        option ifname '@wan'
-        option proto 'dhcp'
-        option ip4table '66'
-        option disabled '1'
+# tag::interfaces[]
 
-# Dann fuer IPv6
-config interface 'internet_share6'
-        option ifname '@wan'
-        option ip6table '66'
-        option disabled '1'
-        option proto 'dhcpv6'
+# Freifunk-Interface - main interface of the node
+# This bridge has the configured IPv4 and IPv6 networks
+# It's using the Freifunk routing table having a dual-stack configuration
 
-# bat0 Interface - wird fuer batman-adv Bridgin benoetigt
-config interface 'bat0'
-	option proto 'none'
-	option ifname 'bat0'
-
-# Freifunk-Interface - das Haupt-Interface des Nodes.
-# Dieser Bridge sind alle konfigurierten Netze zugewiesen
-# Sie verwendet per default eine eigene routing-Tabelle
-# und ist IPv4 / IPv6 Dual stacked konfiguriert
-
-# via ip6assign und ip6class wird erreicht, dass der konfigurierte
-# ULA range fuer router advertisments zur Verfuegung steht
+# Using ip6assign und ip6class the ula space and DHCPv6 PD prefixes are used for delegation
 config interface 'freifunk'
         option disabled '1'
 	option ifname 'bat0'
@@ -42,12 +21,19 @@ config interface 'freifunk'
 	list ip6class 'freifunk'
 	list ip6class 'internet_share6'
 
-# Fastd wird hier als interface konfiguriert, damit es in der Firewall
-# referenziert werden kann.
-# Auf dem Interface ist die IPv4 Adresse des Nodes konfiguriert - 
-# jedoch ohne entspr. Fuer IPv6 wird einfach die Link Local Adresse verwendet
-config interface 'fastd' 
-        option disabled '1'
+# bat0 interface - used in the br-freifunk bridge to access batman-adv
+config interface 'bat0'
+	option proto 'none'
+	option ifname 'bat0'
+
+
+# The fastd interface is used for Freifunk Routing. Being included in babel but not in fastd,
+# Other Mesh-segments are reachable using a vpn.
+# For IPv4 the node's IP address is used with a /32 netmask
+# For IPv6 only host routes are used
+# It's disabled by default an enabled, when IP-addresses are set (i.e. using set_ip.sh)
+config interface 'fastd'
+    option disabled '1'
 	option ifname 'tap-icvpn'
 	option proto 'static'
 	option ipaddr '10.159.64.1'
@@ -55,63 +41,61 @@ config interface 'fastd'
 	option ip4table '66'
 	option ip6table '66'
 
-# Aehnlich zu fastd wird das Interface fuer das Exit-VPN definiert
-# Es kann somit in der Firewall referenziert werden.
-# Die IP-Adresse wird jedoch durch den VPN-Provider gesetzt
+# The VPN is used for sharing internet using a VPN tunnel. Both IPv4 and IPv6 configurations are provided
 config interface 'vpn'
 	option proto 'none'
 	option ifname 'vpn-nat'
 	option ip4table '66'
 	option ip6table '66'
 
-# Falls der VPN-Provider IPv6 Prefix-Delegation unterstuetzt
-# Wird ein entspr. Prefix abgerufen. Gleichzeit wird Policy-Routing
-# Fuer die entspr. Adressen definiert
 config interface 'vpn6'
 	option proto 'dhcpv6'
 	option ifname 'vpn-nat'
 	option ip6table '66'
 
-# VPN - falls PPTP verwendet wird
-# Server sind bspw.
-# - omni.freifunk-koeln.de
-# - yagi.freifunk-koeln.de
-# Accounts: E-Mail an vpn@freifunk-koeln.de
-config interface 'vpn_pptp'
-        option disabled '1'
-        option proto 'pptp'
-        option server 'omni.freifunk-koeln.de'
-        option username 'user'
-        option password 'passwort'
-        option ip4table '66'
-        option ip6table '66'
-
-config interface 'vpn_pptp6'
-        option proto 'dhcpv6'
-        option ifname '@vpn_pptp'
-        option ip6table '66'
-
-# Batman-adv Interface. Definiert, dass batman-adv fuer das mesh
-# Verwendet wird
+# Batman-adv meshes have ot be configured for 2.4 and 5 Ghz sperately.
+# An ad-hoc wifi interface is mapped to each interface definition
+# 2.4 GHz
 config interface 'mesh'
 	option proto 'batadv'
 	option mtu '1532'
 	option mesh 'bat0'
 
-# Variante fuer 5 Ghz
+# 5 Ghz
 config interface 'mesh5'
         option proto 'batadv'
         option mtu '1532'
         option mesh 'bat0'
 
-# Supernode-Interface - tap-Variante
-config interface 'mesh_supernode'           
-        option proto 'batadv'         
-        option mtu '1532'                          
-        option mesh 'bat0'
+# When used as a Freifunk/Gluon supernode, an additional fastd interfaces has to be added to babel.
+# It is disabled by default
+config interface 'mesh_supernode'
+    option disabled '1'
+    option proto 'batadv'
+    option mtu '1532'
+    option mesh 'bat0'
 	option ifname 'tap-supernode'
 
-# Route in der Freifunk-Tabelle: Konfigurierten Range auf Interface routen
+# The share the internet direct, the wan interfaces has to be re-definied using a different routing table
+# This copies all WAN routes to table 66
+# This has to be done for IPv4 and IPv6 separately
+config interface 'internet_share'
+        option ifname '@wan'
+        option proto 'dhcp'
+        option ip4table '66'
+        option disabled '1'
+
+config interface 'internet_share6'
+        option ifname '@wan'
+        option ip6table '66'
+        option disabled '1'
+        option proto 'dhcpv6'
+
+# end::interfaces[]
+
+
+# tag::routes[]
+# The configured IPv4 network is reachable in the freifunk bridge
 config route 'route4_node_subnet'
 	option interface 'freifunk'
 	option target '10.159.64.0'
@@ -119,46 +103,47 @@ config route 'route4_node_subnet'
 	option gateway '0.0.0.0'
 	option table '66'
 
-# Route in der Freifunk-Tabelle: Konfiguriertes ULA-Netz auf Interface routen
+# The configured IPv6 network is reachable in the freifunk bridge
 config route6 'route_6_node_subnet'
 	option interface 'freifunk'
 	option target 'fdd3:5d16:b5dd:f064::/64'
 	option table '66'
 
+# For both babel interfaces (2.4 GHz, 5 GHz) there's a host route for the interface address
 config interface 'babel_mesh'
         option disabled '1'
         option proto 'static'
-        option ipaddr '10.159.64.1'     
+        option ipaddr '10.159.64.1'
         option netmask '255.255.255.255'
         option ip4table '66'
         option ip6table '66'
 
-config interface 'babel_mesh5'                                                          
+config interface 'babel_mesh5'
         option disabled '1'
         option proto 'static'
-        option ipaddr '10.159.64.1'                                                    
-        option netmask '255.255.255.255'                                               
-        option ip4table '66'                                                           
-        option ip6table '66' 
+        option ipaddr '10.159.64.1'
+        option netmask '255.255.255.255'
+        option ip4table '66'
+        option ip6table '66'
 
-
+# Use table 66 for all Freifunk traffic
 config rule 'rule4_freifunk_out'
    	option out     'freifunk'
 	option lookup '66'
 	option priority '66'
 
-config rule6 'rule6_freifunk_out'                  
-        option out     'freifunk'                  
-	option lookup '66'                        
-        option priority '66' 
+config rule6 'rule6_freifunk_out'
+        option out     'freifunk'
+	option lookup '66'
+        option priority '66'
 
-config rule 'rule4_freifunk_in'                                                       
-        option in     'freifunk'                                                      
-        option lookup '66'                                                             
-        option priority '66'                                                           
-                                                                                       
-config rule6 'rule6_freifunk_in'                                                      
-        option in     'freifunk'                                                      
-        option lookup '66'                                                             
-        option priority '66'  
+config rule 'rule4_freifunk_in'
+        option in     'freifunk'
+        option lookup '66'
+        option priority '66'
 
+config rule6 'rule6_freifunk_in'
+        option in     'freifunk'
+        option lookup '66'
+        option priority '66'
+# end::routes[]

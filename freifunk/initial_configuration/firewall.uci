@@ -1,21 +1,12 @@
 package firewall
 
-# Die Firewall trennt das Freifunk-Netz von den anderen Netzen ab.
-# Hierbei ist das Freifunk-Netz von LAN und WAN getrennt, damit keine
-# Datenpakete ihren Weg in andere Netze finden.
+# The firewall seperates the mesh from other networkss such es wan or lan.
 
-# ACHTUNG: Die Konfiguration ist NICHT SICHER
-# Bei einer Kompromittierung des Freifunk-Routes (bspw. durch einen Exploit in babeld)
-# ist ein ungefilterter Zugang auf die anderen Netze moeglich!
+# Mind, that this configuration is not trusted
+# your mesh router can still be compromies i.e. by exploiting babeld.
+# This allows unfiltered access to your wan network.
 
-# Diese Firewall verhindert daher nur das unbeabsichtigte Weiterleiten bestimmter Datenpakete ---
-# insb. ueber das Deinen Internet-Anschluss
-# Zusaetzlich wird der Zugriff auf Dienste (wie z.B. telnet) aus dem Freifunk-Netz unterbunden
-# um den Schaden bei einer Fehlkonfiguration zu beschraeken.
-# Benoetigte Dienste wie bspw. babel werden explizit freigegeben.
-
-# Hier die normalen Regeln
-# fastd ist auf dem WAN-Interface erreichbar, um andere Nodes anbinden zu koennen
+# Allow: fastd from wan (roaming, meshing using vpn)
 config rule
 	option name 'fastd'
 	option src 'wan'
@@ -24,13 +15,8 @@ config rule
 	option target 'ACCEPT'
 	option family 'ipv4'
 
-# Defintion der Freifunk-Zone. Sie besteht aus dem
-# Freifunk-Interface: Bridge ueber bat0, Accesspoint
-# Dem Mesh (Ad-Hoc-Wifi, ohne batman-adv; fuer babel)
-# fastd - dem Interface fuer routed VPN-Uplinks
-#
-# Das routed-VPN ist hier, da routed-VPNs nur Sinn machen, wenn sie
-# in der Freifunk-Community betrieben werden
+# Freifunk zone definition
+# It has all the interfaces used for mesh routing (babel) and the central freifunk brdige.
 config zone 'freifunk'
 	option forward 'ACCEPT'
 	option output 'ACCEPT'
@@ -42,8 +28,8 @@ config zone 'freifunk'
 	list network 'fastd'
 	option mtu_fix '1'
 
-# In der Zone Freifunk, sind die folgenden Dienste / eingehenden Pakete erlaubt:
-# 1. Babel
+# In the freifunk zone, the router can be access by
+# 1st Babel
 config rule
 	option name 'Babel'
 	option src 'freifunk'
@@ -52,7 +38,7 @@ config rule
 	option limit '1000/sec'
 	option target 'ACCEPT'
 
-# 2. IGMP
+# 2nd IGMP
 config rule
 	option name 'Allow IGMP (Freifunk)'
 	option src 'freifunk'
@@ -60,7 +46,7 @@ config rule
 	option family 'ipv4'
 	option target 'ACCEPT'
 
-# 3. ICMP
+# 3rd ICMP
 config rule
 	option name 'Allow ICMP (Freifunk)'
 	option src 'freifunk'
@@ -68,7 +54,7 @@ config rule
 	option family 'ipv4'
 	option target 'ACCEPT'
 
-# 4. DHCP (requests an den Server)
+# 4th DHCP
 config rule
 	option name 'Allow DHCP request (Freifunk)'
 	option src 'freifunk'
@@ -77,7 +63,7 @@ config rule
 	option target 'ACCEPT'
 	option family 'ipv4'
 
-# 5. ICMP v6
+# 5th ICMP v6
 config rule
 	option name 'Allow-ICMPv6-Input (Freifunk)'
 	option src 'freifunk'
@@ -86,8 +72,17 @@ config rule
 	option family 'ipv6'
 	option target 'ACCEPT'
 
-# Der VPN-Uplink ist in einer eigenen Zone, da hier
-# masquerading benoetigt wird
+# 6th SSH (Mind setting a password)
+config rule
+	option name 'Allow SSH (Freifunk)'
+	option src 'freifunk'
+	option dest_port '22'
+	option proto 'tcp'
+	option target 'ACCEPT'
+
+
+
+# Internet exit through VPNs need another zone, since it has to by masquerade
 config zone
 	option forward 'ACCEPT'
 	option output 'ACCEPT'
@@ -97,6 +92,8 @@ config zone
 	option masq '1'
 	option mtu_fix '1'
 
+# In the VPN zone, some incoming traffic is allowed
+# 1st ICMPv6 incoming
 config rule
         option name 'Allow-ICMPv6-Input (VPN)'
         option src 'vpn'
@@ -105,6 +102,7 @@ config rule
         option family 'ipv6'
         option target 'ACCEPT'
 
+# 1st ICMPv6 outgoing
 config rule
         option name 'Allow-ICMPv6-Output (VPN)'
         option dest 'vpn'
@@ -115,32 +113,23 @@ config rule
 
 
 
-# SSH-Zugang fuer Wartungszwecke - sicheres Kennwort setzen
-# Diesen Eintrag entfernen, falls keine Fernwartung noetig ist - sonst nicht sicher!
-config rule
-	option name 'Allow SSH (Freifunk)'
-	option src 'freifunk'
-	option dest_port '22'
-	option proto 'tcp'
-	option target 'ACCEPT'
-
-# Ein Forwarding zwischen VPN und freifunk ist definiert.
-# Dest durch WAN ersetzen, falls das Internet ohne VPN freigegeben werden soll
+# This allows accessing the internet to a vpn tunnel
 config forwarding 'freifunk_internet'
 	option dest 'vpn'
 	option src 'freifunk'
 
-# Hinweis: Falls Du Erfahrung mit dem Abuse handling hast und Deinen Internet-Zugang ungeschuetzt freigeben moechtest
-# Musst Du ein passenden Forwarding zusaetzlich wie folgt definieren.
+# To allow direct access, change it to:
 
 # config forwarding 'freifunk_internet'
 #	option dest 'wan'
 #	option src 'freifunk'
 
-# ACHTUNG: Du solltest hier genau wissen, was Du baust.
+# Mind handling abuse
 
 
-
+# To prevent direct exit traffic accessing your uplink network,
+# RFC1918 and ULA addresses are blocked.
+# Please mind, that accessing public IP addresses is allowed, still.
 config rule
         option name 'Do not forward freifunk traffic to RFC1918 address in WAN zone'
         option src 'freifunk'

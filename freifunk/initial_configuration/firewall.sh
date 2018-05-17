@@ -1,8 +1,8 @@
 #!/bin/sh
 
-# ebtables Multicast-Filter - wieder keine UCI-Settings
-# Verbiete Multicast (d.h. auch Broadcast) im batman-adv Mesh
-# Erlaube DHCP und ARP - Sie werden von batman-adv in unicast umgewandelt
+# ebtables Multicast-filter - not exposed to uci
+# reject multicast / broadcast within the batman-adv mesh
+# allow DHCP and ARP - it is translated into unicast
 echo "
 ebtables -F
 ebtables -A FORWARD -p ARP -j ACCEPT

@@ -1,8 +1,8 @@
 package batman-adv
 
-# Batman-adv wird nur fuer das Roaming benoetigt
-# Der Node ist Server in batman-adv, da hier ein DHCP-Server laeuft
-# Die Distributed ARP-Tabel wird verwendet, um Traffic zu vermeiden
+# Batman-adv is used for roaming
+# Every node is a batman-adv gateway, since it runs a dhcp service
+# DAT, aggregated_ogms and bridge_loop_avoidance are enabled.
 config mesh 'bat0'
 	option orig_interval '5000'
 	option bridge_loop_avoidance '1'
