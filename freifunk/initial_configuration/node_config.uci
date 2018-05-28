@@ -1,12 +1,12 @@
-# Freifunk-Eigene Konfigration (Map, etc.)
+# Freifunk configuration
 package node_config
 
-# Daten uebertragen
+# Map server
 config monitoring
         option enabled '0'
         option server 'fdd3:5d16:b5dd:fc33:70d0:57ff:febb:8f14'
 
-# Standort
+# Geopgraphic location
 config position
         option lat '52.5208'
         option long '13.40942'
@@ -14,6 +14,6 @@ config position
         option zip '10178'
         option city 'Berlin'
 
-# Kontaktdaten
+# Contact data
 config contact
         option mail 'someone@somewhere.com'

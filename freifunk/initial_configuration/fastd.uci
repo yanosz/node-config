@@ -23,7 +23,7 @@ config fastd 'backbone'
 #	list bind 'any:10000' # Bind is done using shell
 	option secret 'generate'
 
-# Template for Gluon suoernodes / disabled by default
+# Template for Gluon supernodes / disabled by default
 config fastd 'supernode'
 	option enabled '0'
 	option syslog_level 'warn'
