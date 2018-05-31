@@ -3,7 +3,7 @@ ifndef LEDE_MIRROR
 endif
 
 ifndef LEDE_SDK
-  LEDE_SDK:=17.01.3/targets/x86/64/lede-sdk-17.01.3-x86-64_gcc-5.4.0_musl-1.1.16.Linux-x86_64.tar.xz
+	LEDE_SDK:=17.01.4/targets/x86/64/lede-sdk-17.01.4-x86-64_gcc-5.4.0_musl-1.1.16.Linux-x86_64.tar.xz
 endif
 
 SDK_FILE:= $(notdir $(LEDE_SDK))
@@ -27,7 +27,7 @@ else
   SIGN_STR:="CONFIG_SIGNED_PACKAGES="
 endif
 
-world: target/bin/packages/all/nodeconfig/Packages
+world: dist
 
 clean:
 	$(RM) -rf target
@@ -50,6 +50,17 @@ target/bin/packages/all/nodeconfig/Packages: target/.config
 	$(MAKE) -C target package/index CONFIG_TARGET_ARCH_PACKAGES=all $(SIGN_STR)
 	$(RM) -rf target/bin/packages/all/base/
 
+.PHONY: dist/doc
+dist/doc:
+	rm -Rf dist/doc
+	mkdir -p dist/doc/css/fonts
+	cp doc/*.png dist/doc
+	asciidoctor -o dist/doc/index.html doc/docs.adoc
+	cp doc/awesome/web-fonts-with-css/css/fontawesome-all.min.css dist/doc/css/fonts/awesome.css
+	cp -r doc/awesome/web-fonts-with-css/webfonts dist/doc/css
 
 
+.PHONY: dist
+dist: dist/doc target/bin/packages/all/nodeconfig/Packages
+	cp -a target/bin/packages/all/nodeconfig dist/feed
 

@@ -1,0 +1,626 @@
+= Advanced Topics
+
+You made a long way. The documentation has many complex details and its quite easy to get lost.
+Anyway, you made it :-).
+
+This chapter focuses on advanced topics. It explains how to use node-config to build packages,
+create a firmware and to do configuration management.
+
+Illustrating underlaying concepts such as multihomming, roaming an Freifunk routing is also part of this
+chapter.
+
+== Building node-config
+
+Node-config uses different Makefiles to generate packages and documentation.
+When building node-config, architecture independent opkg packages ("all") are generated
+using the OpenWRT SDSK.
+
+Also, this chapter describes the underlaying network architecture and propose working methods for node-config.
+
+
+=== Makefiles
+
+Node-config is built using Makefiles. The project contains two Makefiles
+
+* `./Makefile` is the global makefile. Packages and Documentation is generated using `make dist`.
+Have a look at the makefile for other targets
+* `./lede_build/node-config/Makefile` defines the actual opkg packages. By default, node-config is split in
+`node-config` (base part), `node-config-openvpn` (openvpn configuration and dependencies) and
+`node-config-pptp` (pptp configuration and dependencies).
+
+== Generating a OpenWRT package repository (feed) ==
+
+Running `make dist` creates a opkg package repository (feed) at `dist/feed`.
+
+To use this repository on an OpenWRT router, all packages must be signed using a public/private keypair.
+The private key is used to create a signature and has to be present on the router.
+Keys are generating using `usign`, that is part of the https://openwrt.org/docs/guide-developer/using_the_sdk[OpenWRT SDK].
+
+.Generating a new keypair
+
+[#src-listing]
+[source,bash]
+----
+./sdk_home$ staging_dir/host/bin/usign -G -s secret.key -p public.key
+./sdk_home$ cat public.key
+untrusted comment: public key 9cf140f9fda134d8
+RWSc8UD5/aE02AM7y99Y39xfadMna1qpT0sdFtVLU80I508fYqW+tXLG
+./sdk_home$ mv public.key 9cf140f9fda134d8 # Change accordingly.
+----
+In this example, the key id is `9cf140f9fda134d8`. Thus the file `public.key` has to be renamed to
+`9cf140f9fda134d8`. To use the key on OpenWRT, it has to be placed at `/etc/opkg/keys/9cf140f9fda134d8`.
+
+.To create a signed feed, execute:
+[#src-listing]
+[source,bash]
+----
+$  make dist BUILD_KEY=/full/path/to/secret.key
+$ cat dist/feed/Packages.sig
+untrusted comment: signed by key 9cf140f9fda134d8
+RWSc8UD5/aE02GlvkPCIjUvvX9QA0J8a34ONvj2FWcXOZXdF/WTpxyOyvaxwfwPqwvpb14O8Au7SWapAwWnk9LjJ6XFBozfPDwg=
+----
+
+Copy `dist/feed` to a webserver and place a reference at `/etc/opkg/feeds.conf`.
+
+NOTE: Consider make repository accessibly via http and https: opkg doesn't support SSL/TLS - the imagebuilder
+does not require the key to present but supports TLS.
+
+== A Graphical User Interface (GUI).
+
+A Freifung-styled AngularJS based WebUI is available at https://github.com/yanosz/firmware-wizard-frontend. It's still under active development.
+Contributors welcome :-).
+
+
+== Creating Firmware & Configuration Management
+
+Although node-config is not focussing on creating a firmware blob,
+https://openwrt.org/docs/guide-user/additional-software/imagebuilder[OpenWRT's imagebuilder].
+can be used for doing so.
+
+.Creating a firmware for ar71xx devices without pptp
+[#src-listing]
+[source,bash]
+----
+$ wget http://downloads.openwrt.org/releases/17.01.4/targets/ar71xx/generic/lede-imagebuilder-17.01.4-ar71xx-generic.Linux-x86_64.tar.xz
+$ tar xf lede-imagebuilder-17.01.4-ar71xx-generic.Linux-x86_64.tar.xz
+$ cd lede-imagebuilder-17.01.4-ar71xx-generic.Linux-x86_64
+$ echo "src/gz nodeconfig https://kbu.freifunk.net/files/node-config/feed >> repositories.conf
+$ make image PROFILE="Default" PACKAGES="node-config node-config-openvpn ip-full luci-ssl"
+----
+
+TIP:  A gitlab-ci job building firmware including the GUI is available at
+https://git.kbu.freifunk.net/yanosz/node-config-feed
+
+
+TBD: Configuration management using mesh testbed generator
+
+== Underlaying concepts
+
+=== Roaming
+
+Roaming concerns clients moving from one accesspoint to another. To keep all connections alive, traffic must
+be redirected.
+
+Roaming from A to B, the wifi association is updated: In the beginning, all data is transmitted to node A.
+When changing the association, data goes via B instead. This is illustrated in Figure 2. Due to node A
+and B using the same ESSID, the client interfaces is not reset.
+
+.Roaming
+image::babel-roam.png[width=70%]
+
+In this scenario, packets need to be handled by a different nodes: While node A handle's the clients packets in
+the beginning, node B is responsible in the end. This is, where things get messy: Network state needs to
+be updated. IP-packets need to find a new way. However, some ideas exists:
+
+1. _Creating a large, ethernet segment using batman-adv_: As done in classical ethernet networks, a
+client's location is updated using _broadcast / multicast_ continuously behind the scenes.
+In this a flat, MAC-based address scheme, routes cannot be aggregated. In Freifunk communities, these networks
+are VPN based and scale up to 1000 ~ 2000 nodes.
+2. _Update IP routing on roaming:_ Instead of creating a large ethernet segment, the network is split into
+one segment per node. One dedicated subnet is assigned per segment. IP-Packets are routed between those segments
+using traditional IP-routing. Whenever a client roams, a host route is added to the routing table. This
+approach may reduce the size of the routing table. But in order to so, each node needs to know all IP-addresses
+used by clients roaming into its segment. Getting only a mac address from the wifi association, this task is very
+challenging. https://github.com/freifunk-gluon/l3roamd/network[l3roamd] tries to go this way, but it is not
+ready for production, yet.
+3. _Mobile-IP like approaches._ In https://en.wikipedia.org/wiki/Mobile_IP[Mobile IP]
+traffic is handled by a home node and passed along the network. It takes care of maintaining reachability
+information and passing packets to its clients. As a downside, routing through a home node may increases the
+forwarding path. In addition, management traffic for both batman-adv and babel has to be handled.
+
+Combining babel and batman-adv, node-config includes configuration for a mobile IP like system, while not
+being restricted to it. Its functionality is illustrated in the next sections:
+
+At quick glance, using routing two routing protocols (babel and batman-adv) at the same-time
+seems counter-intuitive: It's just duplicating the management effort, isn't it?
+Of course, an ideal mesh protocol would take care of routing and roaming; propagating reachability
+information on MAC and IP-addresses alongside. Unfortunately, no such protocol exist.
+
+
+
+NOTE: In an Mobile IP like setup, the forwarding path doesn't increase necessarily.
+In order to prevent source ip spoofing and to maintain NAT state in a multi homed network, external
+traffic is routed via fixed "home-ish" gateway node in any situation.
+
+==== Roaming in node-config using IPv4
+
+Figure 2 illustrates roaming using IPv4.  A client roams from node A to B.
+The traffic-flow is green, while network connections are red.
+
+The batman-adv mesh cloud connects all segments _in transmission range_. It acts as a huge network switch.
+
+.IPv4 Roaming
+image::babel-ipv4-roam.png[width=70%]
+
+The client is using 10.0.1.42 from A's dhcp range. By that, _node A is the home node_ of the client.
+(Read this as: 10.0.1.1 is set a gateway using dhcp).
+
+When roaming, node A is responsible for handling all the traffic. The client reaches node A (10.0.1.1)
+ using the batman-adv cloud (and vice versa). Having batmn-adv's distributed ARP table enabled, ARP broadcasts
+won't hurt the mesh. Thus - as in classical ethernet -
+both are talking ARP using their MAC-addresses.
+
+Keep in mind, that ethernet segments are _limited by the transmission range_ of the nodes.
+There is no large ethernet segments connecting all nodes using a VPN.
+
+
+==== Roaming in node-config using IPv6
+
+For IPv6 the situation is more complex. In contrast to IPv4, clients have multiple addresses and gateways
+provided by the radv-protocol.
+
+In node-config, a distinct default route is announced by every router (distinct: unique link local address). When a clients roams to a
+different node, it has two default routes, at least. This is illustrated in figure 4.
+
+.IPv6 Roaming
+image::babel-ipv6-roam.png[width=70%]
+
+As before, the clients roams from node A to B. Before connecting to node B it is reachable at
+fd00:1::42. This address is allocated using slaac in node A's segment. Node A is used for routing (route #1)
+
+When moving to node B, the client receives an additional route (route #2) and address (not shown) from the
+node B. Having two default routes, the client can access other networks via node A (route #1)
+and node B (route #2).
+
+* route #1:
+** next-hop: link local address of _node A_.
+** When selected, the client tries to reach node A by its MAC-address.
+** mac-address: reachable via batman-adv
+* route #2:
+** next-hop: link local address of _node B_
+** mac-address: based in the infrastructure network (no batman-adv).
+
+
+Mind, that the traffic (inbound vs. outbound) is slightly asymmetric.
+
+.From the client's point of view:
+* Incoming traffic arrives via node A, only. To reach the client, it is send trough the batman-adv cloud.
+* Outgoing traffic is somewhat asymmetric:
+** If the client chooses the old route, traffic is reaching node A through the batman-adv cloud
+** If the client chooses the new route, traffic _may_ by routed via node A using babel; external traffic
+(i.e. internet) always leaves the mesh via node A due to source specific routing.
+
+
+NOTE: Although babel and batman-adv are operating in the same topology, they use different metrics.
+Thus babel and batman-adv may choose different paths from B to A.
+
+Have in mind, that node-config blocks all multicast traffic in batman-adv including
+IPv6 _Neighbor Solicitation_ (NS). By doing so, Node A has no chance to discover the client's mac address after roaming. Node config assumes:
+
+.ICMPv6 NS assumptions:
+1. All MAC addresses are cached while relevant.
+2. Address collisions won't occur, since nodes have just a few clients.
+3. A client learning a routers mac from a radv-message doesn't need NS to find the correspondig
+router at all time.
+
+
+==== Roaming in wifi range vs. planned roaming
+
+If nodes are in in transmission range, roaming will be easy:
+packets from B to A are sent using wifi, after the client moved from A to B.
+This seems to be realistic: When a client roams, it is connected to the wifi all time long:
+If the signal is lost, the network interface will loose its association and the connection is reset.
+
+Unfortunately, this doesn't work out in any case:
+
+.Problematic situations:
+1. There're obstacles around (i.e. walls) shadowing one node: one node won't be able to reach the other - packets will get lost.
+2. Retransmitting packets uses twice the airtime (at least). This reduces the overall performance.
+
+
+[NOTE]
+====
+* Shadowing by obstacles causes _hidden_ and _exposed_ terminals
+(https://en.wikipedia.org/wiki/Exposed_node_problem[wikipedia]). Try to avoid this, by putting some effort
+into placing the nodes (i.e. line of sight).
+
+* By default, all radios in the mesh are using the same radio frequencies to connect to each other.
+This is good for sparse networks. For dense networks it is better to have devices with multiple radios,
+operating on different frequencies. This involvces _frequency planning_
+(https://en.wikipedia.org/wiki/RF_Planning[wikipedia]).
+====
+
+In these situations you can offload roaming traffic i.e. by using wired or directed links.
+In many situations, its good to use a fastd based vpn (TODO yanosz: add a fastd example
+configuration for offloading in node-config). While fastd is easy to setup and fits for many situations, other technolgies (ethernet, l2tp) provide
+a better performance:
+
+.To offload traffic on a layer2 broadcast medium:
+1. Choose a medium for off-loading (i.e. ethernet, p2p-wifi, l2tp).
+2. Create a corresponding
+https://openwrt.org/docs/guide-user/base-system/basic-networking[OpenWRT configuration]
+3. All all interfaces to babel in `/etc/config/babel`
+4. Add all interfaces to the freifunk firewall-zone in `/etc/config/firewall`
+5. Add policy-routing for these interfaces using table `66` in `/etc/firewall.user`
+6. Add a batman-adv mesh definition for all interfaces in `/etc/config/network`.
+7. Modify `/lib/freifunk/set_ip.sh` to set and IPv4-address (/32) on all related interfaces, execute it, reboot
+the node.
+
+Unfortunately, policy routing and firewalling makes it very complex to add a new link for offloading.
+This is the downside of having a Freifunk-style exit-vpn using an arbitrary provider. When removing
+this functionality, you can skip steps 4 and 5. Using fastd for all links somewhat simplifies this situation,
+because - unlike l2tp - only one tap interface definition is needed for any number offloading peers.
+
+
+[NOTE]
+====
+.Have in mind:
+1. Having a shared network (i.e. ethernet switch, tinc in switched mode) creates a _full mesh_. Management traffic increases
+quadratic in the number of nodes. Consider star or snowflake topologies using p2p links like fastd or l2tp.
+2. babel and batman-adv use broadcast / multicast traffic for management. This is an issue when using
+ directed wifi point-to-point links: By specification, this kind of traffic is sent using a _very low datarate_
+to reach all stations in transmission range, drastically reducing the capacity of the wireless link.
+Consider encapsulating this traffic using p2p-vpns like l2tp or fastd.
+====
+
+
+=== “Multihoming” & Prefix Delegation
+
+A network run by node-config may have multiple internet uplinks.  Typically, internet uplinks are
+provided by different providers using different IPv4 and IPv6 networks.
+
+This is illustrated in figure 5.
+By design, each node acts as a router:
+
+* It routes packets using babel
+* It runs in batman-adv gateway mode, handing out IP addresses.
+
+.Multihoming
+image::multihome.png[width=70%]
+
+Routing packets internally is easy: Having distinct non-overlapping IPv4 and IPv6 networks per node,
+every network is homed at an unique node. Each node announces its prefixes using babel - packets can be routed.
+If a node is connected to the internet (uplink), it will announce a default route in addition.
+
+NOTE: Originally, the term multihoming refers to a situation in BGP: A private autonomous system (AS)
+announces its prefix via different upstream providers. Having the private AS-number removed from the path,
+all networks appear to be originating from all providers; hence they are home to multiple places.
+
+==== IPv4 & Network Address Translation (NAT)
+By default, node-config uses private IPv4 space. To access the internet,
+network addresses need to be translated
+(NAT).
+
+.IPv4 multihoming
+image::multihome-ipv4.png[width=70%]
+
+In figure 6 node A and node B are directly connected to the internet.
+Node A is using 192.0.2.1 - Node B is using 203.0.113.1. In node-config, both A and B take care of NAT:
+When leaving the mesh network, the sender address is changed to 192.0.2.1 (203.0.113.1 resp.).
+
+This design assumes, that the route selection in babel is stable: From the perspective of node D,
+both A and B have usable default routes; the choice is arbitrary. But
+if D's selection changes (i.e. from A to B), the NAT will break: By turning over, the sender address
+switches from 192.0.2.1 to 203.0.113.1. This breaks all the TCP session of all clients at D.
+
+Babeld's stability is defined by the _half-time_ parameter -
+see http://manpages.ubuntu.com/manpages/bionic/man8/babeld.8.html[man babeld] for details.
+
+==== IPv6, source specific routing & Prefix Delegation
+
+The situation is different for IPv6. Instead of translating IP-addresses, routers with internet connectivity
+provide public address space to all other routers.
+
+[CAUTION]
+====
+IPv6 is probably not mature, yet. Altough, node-config only use OpenWRT's core components and
+follows IPv6's best practices by using prefix delegation, some details are likely to be broken.
+
+In addition, node-config's IPv6 configuration is largely untested: Only a few vpn providers have
+support IPv6 prefix delegation.
+====
+
+
+Address space is assigned using DHCP v6 prefix delegation. See
+https://tools.ietf.org/html/rfc3633[rfc3633] for details. In figure 7, `2001:DB8:AAAA::/56` is assigned to
+node A by its provider. Node B got `2001:DB8:BBBB::/56`.
+
+To use these networks, corresponding addresses must be assigned to clients at nodes C,D,E and F.
+In order to do so, at least one `/64` network must be assigned to each node.
+Node-config is using the ad-hoc (or 802.11s) network for prefix delegation. Here's an example:
+
+.IPv6 multihoming
+image::multihome-ipv6.png[width=70%]
+
+.Example configuration using DHCPv6 PD (dynamic).
+* Node C is connected to A. It gets `2001:DB8:AAAA:1::/64`
+* Node D is connected to A and B. It gets `2001:DB8:AAAA:2::/64` and `2001:DB8:BBBB:1::/64`
+* Node E is connectd to B. It gets `2001:DB8:BBBB:2::/64`
+
+Mind, that this configuration is dynamic: C,D and E may choose to request more than one prefix. In addition,
+they can request a larger subnet (i.e. `/60`) for redistribution.
+
+However, there's catch: If a client uses `2001:DB8:AAAA:2::42`, it must use node A
+to access the internet - node B's provider will probably reject the packet due to address spoofing
+(https://en.wikipedia.org/wiki/IP_address_spoofing[wikipedia]). Here _source-specific routing_ comes
+into action. Node A and B announce a default route for their range, _only_. Babel takes care of using the
+correct route
+
+[NOTE]
+====
+Most internet protocols (i.e. BGP)  follow the _destination based forwarding_ paradigm: The route of a packet
+is determined by its _destination address_, only.
+
+_Source routing_ is an alternative to destination based forwarding. Here,
+the _path is defined at the sender_.
+This approach is done by some mesh protocols, implemented in IPv4, but hardly used.
+
+_Source specific routing_ somewhat follows the destination based forwarding paradigm.
+The route is determined by the sender address, only. In addition,
+routes are restricted to a specified source range, limiting the set for destination based lookups.
+
+Babel is using source specific routing, to comply with the destination based forwarding paradigm,
+while taking care of multiple IPv6 networks in the same mesh.
+It's sad, that most slaac-implemtations do not restrict routes like source specific
+routing does.
+====
+
+Unfortunately, node-config's IPv6 functionality is hardly tested.
+
+.Here'll be dragons
+1. What happens, if node A crashes?
+* Will D detect this?
+* Will D stop announcing `2001:DB8:AAAA:1::/64`?
+* Will D's client use `2001:DB8:BBBB:2::/64`, only?
+2. Is DHCPv6 proxying better than redistribution?
+* What's a good redistribution strategy? (density?)
+
+
+===== A way out: Static IPv6 assignments.
+
+As an alternative to prefix delegation you can assign IPv6 networks, statically.
+By providing a public IPv6-network instead of an ULA-network (i.e. when using `set_ip.sh`).
+
+This can be done using provider independent (PI) address space or space assigned by large tunnel providers
+(i.e. https://tunnelbroker.net).
+
+While this is fine for networks under a central administration, the Freifunk philosophy rejects the idea
+of a central administration or uplink. See <<#_design_considerations>> for details.
+
+===== A different way out? Network Prefix Translation
+
+Network prefix translation can be used as an alternative to prefix delegation. Instead of
+handing out public address space, ULA addresses are translated to access the internet.
+(i.e. from `fdc3:337e:00c0:3f04::42` to  `2001:DB8:AAAA:5271::42`).
+This is done on all border routers with IPv6 connectivity (i.e. nodes A and B).
+
+Using ULA addresses removes the necessity of maintaining state for network delegations
+(mind the dragons of Prefix Delegation). Unfortunately, this approach has some drawbacks
+
+.Issues with network prefix translation:
+1. End-to-end addressing is a _fundamental building block_ for IPv6 networks. Address translation
+ is violating this paradigm. Expect issues with protocols expecting compliance.
+2. As in IPv4 (c.f. figure 5) changing the path also changes the sender address and resets all TCP connections.
+Unlike IPv4, you cannot set a fixed default gateway using DHCPv6
+(DHCPv6 Route Options never made it an internet standard), thus we have to consider roaming, again:
+ a. You can live with it
+ b. You can translate all addresses to a statically assigned IPv6 prefix -
+ but then you can do static IPv6 assignments anyway. There's no need to translate addresses, anymore.
+ c. You can use DHCPv6 Prefix Delegation for ULA addresses and babel's source specific routing. While this looks attractive in the first place
+  (unexpected changes in external delegations won't ruin your day),
+  the dragons of Prefix Delegation will still be there +
+  (... what happens, if node A crashes ...)
+
+== Freifunk Networking
+
+Let's have a look at Freifunk: https://freifunk.net[https://freifunk.net] has a good
+introduction into the Freifunk community, its motivation, goals and structure.
+
+In contrast to a green-field mesh vpn, integration into existing community networks
+is an issue - especially, if you want to use your router in an existing Freifunk network.
+As of today, most Freifunk networks are based on
+https://github.com/freifunk-gluon/gluon[Gluon] or connect via the
+https://wiki.freifunk.net/IC-VPN[Intercity-VPN (ICVPN)].
+
+=== Gluon integration / migration
+
+Node-config was developed with Gluon networks in mind. Also, it tries to overcome
+some limitations of gluon networks. See <<#_Design considerations>> for details.
+
+In gluon networks, node-config can be used as a node, supernode,
+or vpn-offloader. Although all options are explained at this section,
+doing so somewhat looses the focus of the points node-config tries to address.
+
+Probably the best way to integrate a node-config router into a Gluon network is to operate it side-by-side.
+
+=== Side-by-side operation ===
+
+In side-by-side operation a node-config router is using the same SSIDs meshing on layer-2.
+To so do edit `/etc/config/wireless` according to your Freifunk community.
+
+It also interesting, to connect all node-config routers and supernodes using a routed vpn speaking babel.
+`/etc/config/fastd` provides a icvpn template for doing so. This allows end-to-end adressing.
+
+[NOTE]
+====
+Consider planned romaing (i.e. fastd from node-config to supernode),
+if and only if a node-config router is in the vicinity of gluon node. The load will be challanging.
+See <<#_Design_considerations>> for details.
+====
+
+=== Gluon Supernode ===
+
+
+Node-config's internals are very similar to a gluon supernode: It speeks batman-adv over fastd and
+provides DHCP as well as routing and ravd services. In fact, some supernodes are connected
+using a backbone vpn using babel.  There're some smaller differences, still.
+
+[NOTE]
+====
+Most OpenWRT routers probably lack the horsepower needed for a supernode
+- even for a mediocre sized network.
+====
+
+
+.Differences between node-config and gluon supernodes
+* Gluon supernodes to not speak babel to other (non-super)-nodes in the mesh.
+* Usually, a DHCP pool of 250 addresses is not enough for a freifunk network.
+
+Node-config contains a fastd supernode template. Enabling it goes like this:
+
+.Starting a local supernode
+[#src-listing]
+[source,bash]
+----
+uci set fastd.supernode.enabled=1
+uci commit
+/etc/init.d/fastd restart
+/etc/init.d/fastd show_key supernode
+----
+By that, a fastd instance is started on `10001/udp`. It's accessible using the WAN and LAN interfaces.
+fastd's public key is printing using the `show_key` command.
+It can to be integrated into the Gluon site configuration - for more information on configuring fastd
+see https://fastd.readthedocs.io/en/v17/manual/config.html
+
+To increase the DHCP pool, you need to change one line in /etc/config/network and /etc/config/dhcp.
+
+./etc/config/network - increase subnet mask:
+[#src-listing]
+[source,uci]
+----
+config interface 'freifunk'
+    # .. some other options ..
+    option netmask '255.255.0.0'
+----
+
+./etc/config/network - increase pool:
+[#src-listing]
+[source,uci]
+----
+
+config dhcp 'freifunk'
+    #   .. some other options ..
+    option limit '10000'
+----
+
+=== Gluon node / VPN-Offloader ===
+
+A gluon node is very lean: It connects to a supernode using fastd and speaks batman-adv.
+It's not running any other service (i.e. babel, dhcp, routing).
+
+
+Technically, there's hardly any difference between a gluon node and a vpn-offloader. Boiling
+it down, a _vpn-offloader is a node_ also accepting incoming fastd connections.
+
+Typically, vpn-offloaders are more powerful gluon nodes, deployed at large sites. Here,
+only the vpn-offloader maintains a connection to the supernode.
+All other nodes connect to the offloader instead. Having only one connection to the supernode
+(instead of one connection per node), brodcast / multicast traffic is sent only once.
+By that, traffic is reduced.
+
+
+.To run a node of vpn-offloader
+1. Enable the supernode fastd instance `uci set fastd.supernode.enabled=1`
+2. Disable the batman-adv gateway mode `uci set batman-adv.bat0.gw_mode='client'`
+3. Disable babel: `/etc/init.d/babeld disable`
+4. Disable DHCP: `uci set dhcp.freifunk.ignore=1`
+5. Commit & restart: `uci commit`
+6. Change SSID and channel in `/etc/config/wireless` according to your Freifunk community.
+
+Reboot the router, when you're done.
+
+When running a node instead of an offloader, mind firewalling
+the fastd-instance by commenting out the correspondig rule in `/etc/config/firewall`.
+
+
+=== ICVPN routing
+
+The Intercity-VPN network (ICVPN) is a tinc and BGP based network for connecting all Freifunk communities.
+See https://wiki.freifunk.net/IC-VPN (german) for details.
+
+Unfortunately, the design of ICVPN makes it almost impossible to connect using a small SoHo-router, only.
+The configuration (BGP, DNS) is generated using python scripts operating on a cloned git repository.
+Way to much for a small node. Thus ICVPN connectivity using DNS and BGP is outside the scope of node-config.
+
+Looking at the big picture, BGP and DNS can be handeled on a different platform (i.e. RaPi running Debian),
+exposing its connectivity using babel. Then, node-config can:
+
+* Use routes learned via babel to connecting to ICPN hosts.
+* Use a IPv6 anycast address for DNS.
+
+Unfortunately, the Freifunk community rejected the idea of a DNS-TLD-naming convention,
+thus delegations for all Freifunk DNS TLDs must be configured individually. Generating a suitable dnsmasq-configuration
+is also part of the pyhton scripts provided by ICVPN. This manual won't go into detail here. See
+https://github.com/freifunk/icvpn or https://wiki.freifunk.net/DNS for more information.
+
+[NOTE]
+====
+IPv4 is futile. Use IPv6, only.
+====
+
+
+Still, node-config has a fastd-instance for ICVPN routing. It's integrated into babel but not into
+batman-adv. In addition, there's a test peer providing basic ICVPN connectivity.
+
+
+.Enabling ICVPN connectivity
+[#src-listing]
+[source,bash]
+----
+uci set fastd.backbone.enabled=1
+uci commit fastd
+/etc/init.d/fastd restart
+----
+
+== Design considerations
+
+Up to now, we were looking technical aspects. That's ok. You're reading a
+technical documentation and - no regrets - it's supposed to be like that.
+On the other hand, most design decisions are based on specific goals or requirements.
+Here, at the end, it's time to connect the dots. These requirements are key to node-configs design:
+
+1. _You don't need any servers_: Some Freifunk network designs promote data center based servers (supernodes)
+to provide basic network functionality (i.e. routing, dhcp). This needs extra funding, requires a
+reliable internet connection as well as a data center and introduces additional complexity. As a requirement for node-config,
+ basic functionality has to be provided by the nodes.
+
+2. _Use vanilla OpenWRT releases_: Many community networks are based on custom OpenWRT builds or forks.
+To start a network, OpenWRT has to be compiled or forked at first. Usually, only a few people know how to maintain or
+compile the software needed to run the network. Node-config is required to use OpenWRT as-it-is; using released
+images and packages, only.
+
+3. _Share your local internet connection_: Freifunk and other networks are built with the idea of having
+one or many internet gateways providing connectivity. Unfortunately, many networks depend on an external
+infrastructure (i.e. a fixed vpn provider).  For node-config, the need for a designated
+vpn provider has to be eliminated. Node-config must allow direct
+internet sharing  or using an arbitrary vpn provider.
+
+4. _Wifi & OpenWRT configuration is all you need to know_: Introducing
+servers or operating vpn providers requires additional knowledge in a community. For instance, supernodes
+require management using ansible or puppet,  connecting to autonomous systems (AS)
+(i.e. Freifunk Rheinland e.V.) via vpn puts the Border Gateway Protocol (BGP) on the table. In its core,
+ that knowledge is outside of running wifi mesh networks and raises the entrance barrier. Using node-config must not require any additional knowledge
+(except OpenWRT configuration and wifi).
+
+5. _Overcoming scaling limitations seen in Gluon based networks._ Many proposed
+Gluon design scale up to 1000 ~ 2000 nodes per mesh. Basically, this is due to broadcast / anycast
+traffic and batman-adv management sent to all nodes. Roaming-management traffic
+is distributed across regions without any reasonable wifi coverage. Node-config is required to scale better
+by integrating hierarchical routing and to limit roaming management traffic to definable regions.
+
+6. _Be decentralized - no administration authority_. Node-config is desinged to implement decentralisation
+(c.f. https://en.wikipedia.org/wiki/Hacker_ethic[Hacker Ethic (wikipedia)]). It is required, that no
+administration authority is supposed to govern the network. Node-config is required to:
+** Eliminate the need for network administrators (i.e. for servers or BGP routers)
+** Empower people, by a simple and accessible design as well as documentation.
+** Lower the entrance barrier (funding,  infrastructure,  know-how) for new communities.

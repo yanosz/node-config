@@ -10,9 +10,9 @@ config peer 'icvpn_test'
 	option net 'backbone'
 	option key 'fa824f8d39adcb3ad6232660bda439020d3c2e61dd56466439fc66c0ee159b41'
 
-# Network definition for Freifunk routing
+# Network definition for Freifunk routing / disabled by default
 config fastd 'backbone'
-	option enabled '1'
+	option enabled '0'
 	option syslog_level 'warn'
 	option mode 'tap'
 	option interface 'tap-icvpn'
