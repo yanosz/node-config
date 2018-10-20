@@ -81,9 +81,9 @@ can be used for doing so.
 [#src-listing]
 [source,bash]
 ----
-$ wget http://downloads.openwrt.org/releases/17.01.4/targets/ar71xx/generic/lede-imagebuilder-17.01.4-ar71xx-generic.Linux-x86_64.tar.xz
-$ tar xf lede-imagebuilder-17.01.4-ar71xx-generic.Linux-x86_64.tar.xz
-$ cd lede-imagebuilder-17.01.4-ar71xx-generic.Linux-x86_64
+$ wget https://downloads.openwrt.org/releases/18.06.1/targets/ar71xx/generic/openwrt-imagebuilder-18.06.1-ar71xx-generic.Linux-x86_64.tar.xz
+$ tar xf openwrt-imagebuilder-18.06.1-ar71xx-generic.Linux-x86_64.tar.xz
+$ cd openwrt-imagebuilder-18.06.1-ar71xx-generic.Linux-x86_64
 $ echo "src/gz nodeconfig https://kbu.freifunk.net/files/node-config/feed >> repositories.conf
 $ make image PROFILE="Default" PACKAGES="node-config node-config-openvpn ip-full luci-ssl"
 ----

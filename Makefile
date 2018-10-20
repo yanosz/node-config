@@ -1,9 +1,9 @@
 ifndef LEDE_MIRROR
-  LEDE_MIRROR:=https://downloads.lede-project.org/releases/
+  LEDE_MIRROR:=https://downloads.openwrt.org/releases/
 endif
 
 ifndef LEDE_SDK
-	LEDE_SDK:=17.01.4/targets/x86/64/lede-sdk-17.01.4-x86-64_gcc-5.4.0_musl-1.1.16.Linux-x86_64.tar.xz
+	LEDE_SDK:=18.06.1/targets/x86/64/openwrt-sdk-18.06.1-x86-64_gcc-7.3.0_musl.Linux-x86_64.tar.xz
 endif
 
 SDK_FILE:= $(notdir $(LEDE_SDK))
