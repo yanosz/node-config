@@ -57,7 +57,7 @@ hierarchical routing capabilities. The network is IPv4 and IPv6 dual-stack.
 - A lean baseline for testing new architectures and services (i.e. l3roamd)
 ====
 
-A git-repository is https://github.com/node-config at  https://github.com/yanosz/node-config -
+A git-repository is available at  https://github.com/yanosz/node-config -
 for help and discussions please subscribe to the
 https://lists.freifunk.net/mailman/listinfo/wlanware-freifunk.net[wlanware mailing list].
 
