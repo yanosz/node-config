@@ -6,10 +6,10 @@ Worum geht's?
 Dieses Projekt enthält einige Konfigurationsdateien, die beispielhaft für einen Freifunk-Node verwendet werden können.
 Du kannst die Konfiguration auf Deinen Node kopieren, anpassen und anwenden.
 
-Voraussetzung ist LEDE 17.01 mit ausreichend Speicherplatz. Der Node muss mit dem Internet (WAN-Port) und einem PC / Notebook (LAN-Port) verbunden werden.
+Voraussetzung ist OpenWRT 18.06 mit ausreichend Speicherplatz. Der Node muss mit dem Internet (WAN-Port) und einem PC / Notebook (LAN-Port) verbunden werden.
 Die alte OpenWRT Konfiguration (Chaos Calmer) findet sich im Branch `openwrt`. Die
 
-In der Anleitung gehe ich davon aus, dass Du mit der Konsole aus Linux (Mac OS, Unix, usw.) vertraut bist, git installiert ist und Du Dich per `ssh` mit dem lede-Router verbinden kannst. Evtl. musst Du noch Software installieren - auf Windows z.B. cygwin mit bash, git und ssh.
+In der Anleitung gehe ich davon aus, dass Du mit der Konsole aus Linux (Mac OS, Unix, usw.) vertraut bist, git installiert ist und Du Dich per `ssh` mit dem OpenWRT-Router verbinden kannst. Evtl. musst Du noch Software installieren - auf Windows z.B. cygwin mit bash, git und ssh.
 
 Schnellstart-Anleitung
 ------------------------
@@ -64,11 +64,11 @@ Mit Umleiten der `dest` auf `wan` erlaubst Du in der Firewall, dass Pakete über
 
 Wenig Speicherplatz?
 ----------------------
-Wenn Dein Node lediglich 4 MB Flash hat (z.B. TP-Link WR841n), dann musst Du ein LEDE-Image erstellen, in dem keine WebGUI enthalten ist - zum Beispiel:
+Wenn Dein Node lediglich 4 MB Flash hat (z.B. TP-Link WR841n), dann musst Du ein OpenWRT-Image erstellen, in dem keine WebGUI enthalten ist - zum Beispiel:
 ```bash
-wget http://downloads.lede-project.org/releases/17.01.4/targets/ar71xx/generic/lede-imagebuilder-17.01.4-ar71xx-generic.Linux-x86_64.tar.xz
-tar xf lede-imagebuilder-17.01.4-ar71xx-generic.Linux-x86_64.tar.xz
-cd lede-imagebuilder-17.01.4-ar71xx-generic.Linux-x86_64
+wget https://downloads.openwrt.org/releases/18.06.1/targets/ar71xx/generic/openwrt-imagebuilder-18.06.1-ar71xx-generic.Linux-x86_64.tar.xz
+tar xf openwrt-imagebuilder-18.06.1-ar71xx-generic.Linux-x86_64.tar.xz
+cd openwrt-imagebuilder-18.06.1-ar71xx-generic.Linux-x86_64
 make image PROFILE="TLWR841" PACKAGES="ip openvpn-mbedtls  babeld fastd owipcalc batctl haveged kmod-nf-nathelper-extra kmod-pptp ppp-mod-pptp  ebtables kmod-ebtables-ipv4"
 ```
 
@@ -93,7 +93,7 @@ Als fastd-Peer in gluon muss die LAN-Adresse Deines Nodes (z.B. `192.168.1.1`) u
 
 Der letzte Befehl zeigt den fastd Public-Key. Nun kannst Du die WAN-Ports der Gluon-Router (blauer Port) mit den LAN-Ports des Routers (gelbe Ports) verbinden.
 
-LEDE-Pakete? GUI? Firmware ?
+OpenWRT-Pakete? GUI? Firmware ?
 -----------------------------
 
 Du kannst auch opkg-Pakete obauen. Werf' einen Blick ins [Makefile](Makefile) `make world` baut alle notwendigen Pakete.
@@ -168,4 +168,4 @@ Definiert 2 Wifi-Netze (ad-hoc + AP).
 
 Falls ein 2. Wifi-Device vorhanden ist (radio1) wird ist als 5 Ghz Wifi für den Kanal 36 konfiguriert.
 
-Falls eine eindeutige lede default Konfiguration auf einem deaktivierten WLAN erstellt ist, so wird die Konfiguration gelöscht.
+Falls eine eindeutige OpenWRT default Konfiguration auf einem deaktivierten WLAN erstellt ist, so wird die Konfiguration gelöscht.

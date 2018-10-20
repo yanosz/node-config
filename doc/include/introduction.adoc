@@ -42,7 +42,7 @@ Let's get started.
 == What node-config is
 
 Node-config is just a _bunch of uci configuration files including a scripts to apply them_. It is copied to
-plain OpenWRT routers running Lede 17.01 and merged into the existing configuration. It configures routing, network- and wireless interfaces as
+plain OpenWRT routers running OpenWRT 18.06 and merged into the existing configuration. It configures routing, network- and wireless interfaces as
 well as network services such as dhcp and radv.
 
 It spans a mesh network using _both babel and batman-adv_ to provide roaming and
@@ -58,14 +58,14 @@ hierarchical routing capabilities. The network is IPv4 and IPv6 dual-stack.
 - A lean baseline for testing new architectures and services (i.e. l3roamd)
 ====
 
-A git-repository is availble at  https://github.com/node-config -
+A git-repository is available at  https://github.com/yanosz/node-config -
 for help and discussions please subscribe to the
 https://lists.freifunk.net/mailman/listinfo/wlanware-freifunk.net[wlanware mailing list].
 
 
 == Quick-start
 
-You need https://downloads.openwrt.org[OpenWRT / LEDE 17.01] installed on a router and enough free flash space (~2 MB).
+You need https://downloads.openwrt.org[OpenWRT 18.06] installed on a router and enough free flash space (~2 MB).
 The router has to be connected to the internet (wan port) an to your computer (pc or laptop using the lan port)
 
 It helps to be familiar with a unix terminal (i.e. Mac OS, Linux)

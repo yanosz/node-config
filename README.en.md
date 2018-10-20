@@ -3,7 +3,7 @@ What is this about?
 This project has a sample configure, that can be used for a Freifunk-Node.
 You can copy this configuration to router, change and apply it.
 
-You need OpenWRT/LEDE 17.0.1 installed on a router and enough free flash space. The router has to be
+You need OpenWRT 18.06 installed on a router and enough free flash space. The router has to be
 connected to the internet (wan port) an to a pc or laptop (lan port).
 
 This intro assumes, that you're familiar with linux console (or Mac OS, Unix, etc.)
@@ -63,12 +63,12 @@ Setting `dest` to `wan` makes the firewall passing packets to your wan ports.
 
 Low on flash?
 ----------------------
-If your node only has 4 MB of flash (i.e. TP-Link WR841n), then create a LEDE-Image not having a WebGUI (luci). Examle:
+If your node only has 4 MB of flash (i.e. TP-Link WR841n), then create a OpenWRT-Image not having a WebGUI (luci). Examle:
 
 ```bash
-wget http://downloads.lede-project.org/releases/17.01.4/targets/ar71xx/generic/lede-imagebuilder-17.01.4-ar71xx-generic.Linux-x86_64.tar.xz
-tar xf lede-imagebuilder-17.01.4-ar71xx-generic.Linux-x86_64.tar.xz
-cd lede-imagebuilder-17.01.4-ar71xx-generic.Linux-x86_64
+wget https://downloads.openwrt.org/releases/18.06.1/targets/ar71xx/generic/openwrt-imagebuilder-18.06.1-ar71xx-generic.Linux-x86_64.tar.xz
+tar xf openwrt-imagebuilder-18.06.1-ar71xx-generic.Linux-x86_64.tar.xz
+cd openwrt-imagebuilder-18.06.1-ar71xx-generic.Linux-x86_64
 make image PROFILE="TLWR841" PACKAGES="ip openvpn-mbedtls  babeld fastd owipcalc batctl haveged kmod-nf-nathelper-extra kmod-pptp ppp-mod-pptp  ebtables kmod-ebtables-ipv4"
 ```
 
@@ -91,14 +91,14 @@ uci commit
 ```
 The last command shows your public fastd key. It can be embedded using in a Gluon Makefile.
 
-LEDE packages? Graphical User Interface (GUI)? Firmware ?
+OpenWRT packages? Graphical User Interface (GUI)? Firmware ?
 -----------------------------
 
-You can also build LEDE / OpenWRT packages. Have a look at the [Makefile](Makefile): `make world` builds all packages
+You can also build OpenWRT packages. Have a look at the [Makefile](Makefile): `make world` builds all packages
 
 The GUI is under development. For details see: https://github.com/yanosz/firmware-wizard-frontend
 
-LEDE Firwmare images are placed at https://kbu.freifunk.net/files/node-config/ - it is built by
+OpenWRT Firwmare images are placed at https://kbu.freifunk.net/files/node-config/ - it is built by
 For the build repository have a look at https://git.kbu.freifunk.net/yanosz/node-config-feed.
 
 For opkg-feeds you can access the server without TLS: http://opkg.kbu.freifunk.net/node-config/
@@ -179,4 +179,4 @@ The wifi configuration defines to network (ad-hoc + ap).
 
 If a second wifi device is available, 5 Ghz is assumed.
 
-If there is a unused lede default configuration on this adapter, it is set inactive.
+If there is a unused OpenWRT default configuration on this adapter, it is set inactive.
