@@ -28,11 +28,12 @@ Node-config is trying to jump in here by providing a comprehensible configuratio
 Without having a shiny user interface in its core, node-config is focusing on network enthusiasts.
 It explains all necessary OpenWRT settings for a simple wifi mesh, while providing a complete and easy-to-use setup.
 
-This documentation is devided into tree chapters: _Introduction & Quick-start_ provides an overview including
+This documentation is devided into tree chapters: <<_introduction_quick_start>>
+ provides an overview including
 a hands-on. It helps to get node-config running in a few minutes. The chapter
-_Configuration in node-config_ takes a deep dive into the configuration:
+<<_configuration_in_node_config>> takes a deep dive into the configuration:
 It outlines all things done to an OpenWRT router by node-config.
-The last chapter _Advanced Topics_ highlights the background.
+The last chapter <<_advanced_topics>> highlights the background.
 It illustrates node-config's design considerations and explains the concepts in use.
 Building packages and firmware is also addressed in the last chapter.
 
@@ -95,10 +96,10 @@ is usually the way to go. Please mind bookkeeping.
 
 == Using packages
 
-Package can be used _instead of copying the filesystem tree_ using git and scp.
+Packages can be used _instead of copying the filesystem tree_ using git and scp.
 
 For testing, opkg packages are available at: https://kbu.freifunk.net/files/node-config/. Packages are built
-using the projects <<_makefiles>> and Gitlab CI server.
+using an https://git.kbu.freifunk.net/yanosz/node-config-feed[additional project integrated into GitLab CI].
 
 .To install the packages open a ssh session to your router and execute:
 

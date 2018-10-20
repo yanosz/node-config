@@ -84,7 +84,7 @@ can be used for doing so.
 $ wget http://downloads.openwrt.org/releases/17.01.4/targets/ar71xx/generic/lede-imagebuilder-17.01.4-ar71xx-generic.Linux-x86_64.tar.xz
 $ tar xf lede-imagebuilder-17.01.4-ar71xx-generic.Linux-x86_64.tar.xz
 $ cd lede-imagebuilder-17.01.4-ar71xx-generic.Linux-x86_64
-$ echo "src/gz nodeconfig https://kbu.freifunk.net/files/node-config/feed >> repositories.conf
+$ echo "src/gz nodeconfig https://kbu.freifunk.net/files/node-config/packages >> repositories.conf
 $ make image PROFILE="Default" PACKAGES="node-config node-config-openvpn ip-full luci-ssl"
 ----
 
@@ -395,7 +395,7 @@ This can be done using provider independent (PI) address space or space assigned
 (i.e. https://tunnelbroker.net).
 
 While this is fine for networks under a central administration, the Freifunk philosophy rejects the idea
-of a central administration or uplink. See <<#_design_considerations>> for details.
+of a central administration or uplink. See <<_design_considerations>> for details.
 
 ===== A different way out? Network Prefix Translation
 
@@ -614,13 +614,13 @@ require management using ansible or puppet,  connecting to autonomous systems (A
 
 5. _Overcoming scaling limitations seen in Gluon based networks._ Many proposed
 Gluon design scale up to 1000 ~ 2000 nodes per mesh. Basically, this is due to broadcast / anycast
-traffic and batman-adv management sent to all nodes. Roaming-management traffic
+and batman-adv management traffic sent to all nodes. Roaming management traffic
 is distributed across regions without any reasonable wifi coverage. Node-config is required to scale better
 by integrating hierarchical routing and to limit roaming management traffic to definable regions.
 
 6. _Be decentralized - no administration authority_. Node-config is desinged to implement decentralisation
 (c.f. https://en.wikipedia.org/wiki/Hacker_ethic[Hacker Ethic (wikipedia)]). It is required, that no
-administration authority is supposed to govern the network. Node-config is required to:
+administration authority governs the network. Node-config is required to:
 ** Eliminate the need for network administrators (i.e. for servers or BGP routers)
-** Empower people, by a simple and accessible design as well as documentation.
+** Empower people by providing a simple and accessible design as well as documentation.
 ** Lower the entrance barrier (funding,  infrastructure,  know-how) for new communities.
