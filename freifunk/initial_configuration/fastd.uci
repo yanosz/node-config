@@ -5,10 +5,10 @@ package fastd
 # Test peer for Freifunk routing.
 # Better: Setup your own peer and connect it to the icvpn usign BGP
 config peer 'icvpn_test'
-	option remote 'ipv4 "5.9.31.99" port 11003'
+	option remote 'ipv4 "78.46.109.234" port 11003'
 	option enabled '1'
 	option net 'backbone'
-	option key 'fa824f8d39adcb3ad6232660bda439020d3c2e61dd56466439fc66c0ee159b41'
+	option key '8afd18e90e48040db11bd769a7ee7c3c945a97d8c1ac586f4d316da7389f4d36'
 
 # Network definition for Freifunk routing / disabled by default
 config fastd 'backbone'
