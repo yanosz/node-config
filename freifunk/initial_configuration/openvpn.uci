@@ -6,6 +6,12 @@ config openvpn 'mullvad'
 	option enabled '0'
 	option config '/lib/freifunk/vpn/mullvad/mullvad.conf'
 
+# OpenVPN-configuration for tunnel providers
+# Beispiel fuer ipredator
+config openvpn 'ipredator'                                    
+        option enabled '0'                                    
+        option config '/lib/freifunk/vpn/ipredator/IPredator-CLI-Password.conf'
+
 
 # Freifunk-KBU Exit-VPN
 # More information:
