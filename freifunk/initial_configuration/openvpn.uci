@@ -20,6 +20,11 @@ config openvpn 'freifunk_kbu'
 	option enabled '0'
 	option config '/lib/freifunk/vpn/freifunk_kbu/client.conf'
 
+# Freifunk-EU Exit-VPN
+# # Weitere Infos: 
+config openvpn 'freifunk_eu'
+        option enabled '0'
+        option config '/lib/freifunk/vpn/ffeu/client.conf'
 
 # yanosz' Freifunk-Exit-VPN
 # Used for testing
